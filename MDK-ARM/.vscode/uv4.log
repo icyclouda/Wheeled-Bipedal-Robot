@@ -1,0 +1,67 @@
+*** Using Compiler 'V5.06 update 6 (build 750)', folder: 'E:\Keil_v5\ARM\ARMCC\Bin'
+Build target 'CtrBoard'
+compiling exoskeleton_robot.c...
+..\User\exoskeleton_robot.c(46): error:  #147-D: declaration is incompatible with "void gait_cal(custom_target_t, float)"  (declared at line 49 of "..\User\exoskeleton_robot.h")
+  void gait_cal(custom_target_t *_custom_target, float total_time) {
+..\User\exoskeleton_robot.c(50): error:  #154: expression must have struct or union type
+         _custom_target.hip_time[i] = _custom_target.step_total_time * _custom_target.hip_rate[i]; // 大腿时间
+..\User\exoskeleton_robot.c(50): error:  #154: expression must have struct or union type
+         _custom_target.hip_time[i] = _custom_target.step_total_time * _custom_target.hip_rate[i]; // 大腿时间
+..\User\exoskeleton_robot.c(50): error:  #154: expression must have struct or union type
+         _custom_target.hip_time[i] = _custom_target.step_total_time * _custom_target.hip_rate[i]; // 大腿时间
+..\User\exoskeleton_robot.c(54): error:  #154: expression must have struct or union type
+         _custom_target.knee_time[i] = _custom_target.step_total_time * _custom_target.knee_rate[i]; // 小腿时间
+..\User\exoskeleton_robot.c(54): error:  #154: expression must have struct or union type
+         _custom_target.knee_time[i] = _custom_target.step_total_time * _custom_target.knee_rate[i]; // 小腿时间
+..\User\exoskeleton_robot.c(54): error:  #154: expression must have struct or union type
+         _custom_target.knee_time[i] = _custom_target.step_total_time * _custom_target.knee_rate[i]; // 小腿时间
+..\User\exoskeleton_robot.c(57): error:  #154: expression must have struct or union type
+  step_time = total_time - ((int)(total_time / _custom_target.step_total_time)) * _custom_target.step_total_time;
+..\User\exoskeleton_robot.c(57): error:  #154: expression must have struct or union type
+  step_time = total_time - ((int)(total_time / _custom_target.step_total_time)) * _custom_target.step_total_time;
+..\User\exoskeleton_robot.c(59): error:  #154: expression must have struct or union type
+     if (step_time - _custom_target.hip_time[1] < 0.0f) {
+..\User\exoskeleton_robot.c(60): error:  #154: expression must have struct or union type
+        robot.joint[0].pos_target = _custom_target.hip_target[1] / 360.0f * PI; // 大腿目标位置
+..\User\exoskeleton_robot.c(61): error:  #154: expression must have struct or union type
+        robot.joint[0].vel_target = (_custom_target.hip_target[1] - _custom_target.hip_target[0]) / (_custom_target.hip_time[1] - _custom_target.hip_time[0]); // 大腿目标速度
+..\User\exoskeleton_robot.c(61): error:  #154: expression must have struct or union type
+        robot.joint[0].vel_target = (_custom_target.hip_target[1] - _custom_target.hip_target[0]) / (_custom_target.hip_time[1] - _custom_target.hip_time[0]); // 大腿目标速度
+..\User\exoskeleton_robot.c(61): error:  #154: expression must have struct or union type
+        robot.joint[0].vel_target = (_custom_target.hip_target[1] - _custom_target.hip_target[0]) / (_custom_target.hip_time[1] - _custom_target.hip_time[0]); // 大腿目标速度
+..\User\exoskeleton_robot.c(61): error:  #154: expression must have struct or union type
+        robot.joint[0].vel_target = (_custom_target.hip_target[1] - _custom_target.hip_target[0]) / (_custom_target.hip_time[1] - _custom_target.hip_time[0]); // 大腿目标速度
+..\User\exoskeleton_robot.c(63): error:  #154: expression must have struct or union type
+     else if (step_time - _custom_target.hip_time[2] < 0.0f) {
+..\User\exoskeleton_robot.c(64): error:  #154: expression must have struct or union type
+        robot.joint[0].pos_target = _custom_target.hip_target[2] / 360.0f * PI;
+..\User\exoskeleton_robot.c(65): error:  #154: expression must have struct or union type
+        robot.joint[0].vel_target = (_custom_target.hip_target[2] - _custom_target.hip_target[1]) / (_custom_target.hip_time[2] - _custom_target.hip_time[1]);
+..\User\exoskeleton_robot.c(65): error:  #154: expression must have struct or union type
+        robot.joint[0].vel_target = (_custom_target.hip_target[2] - _custom_target.hip_target[1]) / (_custom_target.hip_time[2] - _custom_target.hip_time[1]);
+..\User\exoskeleton_robot.c(65): error:  #154: expression must have struct or union type
+        robot.joint[0].vel_target = (_custom_target.hip_target[2] - _custom_target.hip_target[1]) / (_custom_target.hip_time[2] - _custom_target.hip_time[1]);
+..\User\exoskeleton_robot.c(65): error:  #154: expression must have struct or union type
+        robot.joint[0].vel_target = (_custom_target.hip_target[2] - _custom_target.hip_target[1]) / (_custom_target.hip_time[2] - _custom_target.hip_time[1]);
+..\User\exoskeleton_robot.c(67): error:  #154: expression must have struct or union type
+     else if (step_time - _custom_target.hip_time[3] < 0.0f) {
+..\User\exoskeleton_robot.c(68): error:  #154: expression must have struct or union type
+        robot.joint[0].pos_target = _custom_target.hip_target[3] / 360.0f * PI;
+..\User\exoskeleton_robot.c(69): error:  #154: expression must have struct or union type
+        robot.joint[0].vel_target = (_custom_target.hip_target[3] - _custom_target.hip_target[2]) / (_custom_target.hip_time[3] - _custom_target.hip_time[2]);
+..\User\exoskeleton_robot.c(69): error:  #154: expression must have struct or union type
+        robot.joint[0].vel_target = (_custom_target.hip_target[3] - _custom_target.hip_target[2]) / (_custom_target.hip_time[3] - _custom_target.hip_time[2]);
+..\User\exoskeleton_robot.c(69): error:  #154: expression must have struct or union type
+        robot.joint[0].vel_target = (_custom_target.hip_target[3] - _custom_target.hip_target[2]) / (_custom_target.hip_time[3] - _custom_target.hip_time[2]);
+..\User\exoskeleton_robot.c(69): error:  #154: expression must have struct or union type
+        robot.joint[0].vel_target = (_custom_target.hip_target[3] - _custom_target.hip_target[2]) / (_custom_target.hip_time[3] - _custom_target.hip_time[2]);
+..\User\exoskeleton_robot.c(71): error:  #154: expression must have struct or union type
+     else if (step_time - _custom_target.hip_time[4] < 0.0f) {
+..\User\exoskeleton_robot.c(72): error:  #154: expression must have struct or union type
+        robot.joint[0].pos_target = _custom_target.hip_target[4] / 360.0f * PI;
+..\User\exoskeleton_robot.c(73): error:  #154: expression must have struct or union type
+        robot.joint[0].vel_target = (_custom_target.hip_target[4] - _custom_target.hip_target[3]) / (_custom_target.hip_time[4] - _custom_target.hip_time[3]);
+..\User\exoskeleton_robot.c: 0 warnings, 30 errors
+"CtrBoard\CtrBoard.axf" - 30 Error(s), 0 Warning(s).
+Target not created.
+Build Time Elapsed:  00:00:06

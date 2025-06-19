@@ -1,0 +1,28 @@
+#include "exoskeleton_robot.h"
+
+uint8_t enable_flag = 0;
+
+typedef struct
+{
+    float pos_target; // 目标位置
+    float vel_target; // 目标速度
+    float pos_current; // 当前电机位置
+    float vel_current; // 当前电机速度
+} joint_parameter_t;
+
+
+
+
+typedef struct
+{
+   joint_parameter_t joint[4]; // 左上、左下、右上、右下
+   uint8_t enable_flag; // 机器人使能标志位
+
+
+
+
+} robot_t;
+
+   // 记录时间戳
+   uint32_t ms_timestamp; // 时间戳ms
+   double current_time; // 当前时间

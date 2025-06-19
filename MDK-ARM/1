@@ -1,0 +1,11 @@
+#ifndef __exoskeleton_ROBOT__
+#define __exoskeleton_ROBOT__
+
+#include "main.h"
+
+
+extern uint32_t ms_timestamp; // 时间戳ms
+extern double current_time; // 当前时间
+
+
+#endif

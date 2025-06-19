@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "bsp_fdcan.h": "c",
+        "dm_motor_drv.h": "c",
+        "dm_motor_ctrl.h": "c",
+        "exoskeleton_robot.h": "c"
+    }
+}
