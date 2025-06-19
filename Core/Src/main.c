@@ -18,7 +18,9 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "cmsis_os.h"
 #include "fdcan.h"
+#include "memorymap.h"
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
@@ -27,7 +29,6 @@
 /* USER CODE BEGIN Includes */
 #include "bsp_fdcan.h"
 #include "dm_motor_ctrl.h"
-#include "exoskeleton_robot.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -53,31 +54,13 @@
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
+void MX_FREERTOS_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-{
-  /* USER CODE BEGIN Callback 0 */
-	if (htim->Instance == TIM3) {
-		
-		// read_all_motor_data(&motor[Motor1]);
-		
-		// if(motor[Motor1].tmp.read_flag == 0)
-		// 	dm_motor_ctrl_send(&hfdcan1, &motor[Motor1]);
-
-    if (robot.init_flag) {
-    // è‡ªå¢ž1ms
-    ms_timestamp++;
-    current_time = ms_timestamp / 1000.0;
-    }
-    // Use current_time as needed
-	}
-}
-
 
 /* USER CODE END 0 */
 
@@ -117,15 +100,15 @@ int main(void)
   MX_FDCAN2_Init();
   /* USER CODE BEGIN 2 */
 
-	HAL_TIM_Base_Start_IT(&htim3); // Timer3ä¸­æ–­ï¼Œä¸æ–­å‘é€è®¿é—®å¯„å­˜å™¨æ•°æ®å¸§
-  // è®¾ç½®æŽ§åˆ¶æ¿çš„xt30 5VæŽ§åˆ¶å£
+	HAL_TIM_Base_Start_IT(&htim3); // Timer3ÖÐ¶Ï£¬²»¶Ï·¢ËÍ·ÃÎÊ¼Ä´æÆ÷Êý¾ÝÖ¡
+  // ÉèÖÃ¿ØÖÆ°åµÄxt30 5V¿ØÖÆ¿Ú
 	power1(1);
 	power2(1);
 
 	HAL_Delay(1000);
 	
-	bsp_fdcan_set_baud(&hfdcan1, CAN_CLASS, CAN_BR_1M); // can1çš„fdcané…ç½®
-	bsp_fdcan_set_baud(&hfdcan2, CAN_CLASS, CAN_BR_1M); // can2çš„fdcané…ç½®
+	bsp_fdcan_set_baud(&hfdcan1, CAN_CLASS, CAN_BR_1M); // can1µÄfdcanÅäÖÃ
+	bsp_fdcan_set_baud(&hfdcan2, CAN_CLASS, CAN_BR_1M); // can2µÄfdcanÅäÖÃ
 
 
 	bsp_can_init();
@@ -145,6 +128,17 @@ int main(void)
 	// HAL_Delay(100);
 	// read_all_motor_data(&motor[Motor1]);
   /* USER CODE END 2 */
+
+  /* Init scheduler */
+  osKernelInitialize();
+
+  /* Call init function for freertos objects (in cmsis_os2.c) */
+  MX_FREERTOS_Init();
+
+  /* Start scheduler */
+  osKernelStart();
+
+  /* We should never get here as control is now taken by the scheduler */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
@@ -220,6 +214,28 @@ void SystemClock_Config(void)
 /* USER CODE BEGIN 4 */
 
 /* USER CODE END 4 */
+
+/**
+  * @brief  Period elapsed callback in non blocking mode
+  * @note   This function is called  when TIM7 interrupt took place, inside
+  * HAL_TIM_IRQHandler(). It makes a direct call to HAL_IncTick() to increment
+  * a global variable "uwTick" used as application time base.
+  * @param  htim : TIM handle
+  * @retval None
+  */
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+  /* USER CODE BEGIN Callback 0 */
+
+  /* USER CODE END Callback 0 */
+  if (htim->Instance == TIM7)
+  {
+    HAL_IncTick();
+  }
+  /* USER CODE BEGIN Callback 1 */
+
+  /* USER CODE END Callback 1 */
+}
 
 /**
   * @brief  This function is executed in case of error occurrence.

@@ -4,10 +4,10 @@
 #include "fdcan.h"
 #include "bsp_fdcan.h"
 
-#define MIT_MODE 			0x000
-#define POS_MODE			0x100
-#define SPD_MODE			0x200
-#define PSI_MODE		  	0x300
+#define MIT_MODE 0x000
+#define POS_MODE 0x100
+#define SPD_MODE 0x200
+#define PSI_MODE 0x300
 
 #define KP_MIN 0.0f
 #define KP_MAX 500.0f
@@ -16,133 +16,129 @@
 
 typedef enum
 {
-    Motor1,
+    Motor1 = 0X0U,
     Motor2,
     Motor3,
     Motor4,
     Motor5,
     Motor6,
-	Motor7,
-	Motor8,
-	Motor9,
-	Motor10,
+    Motor7,
+    Motor8,
     num
 } motor_num;
 
 typedef enum
 {
-	mit_mode = 1,
-	pos_mode = 2,
-	spd_mode = 3,
-	psi_mode = 4
+    mit_mode = 1,
+    pos_mode = 2,
+    spd_mode = 3,
+    psi_mode = 4
 } mode_e;
 
-typedef enum {
-    RID_UV_VALUE=0,    // µÍÑ¹±£»¤Öµ
-    RID_KT_VALUE=1,    // Å¤¾ØÏµÊý
-    RID_OT_VALUE=2,    // ¹ýÎÂ±£»¤Öµ
-    RID_OC_VALUE=3,    // ¹ýÁ÷±£»¤Öµ
-    RID_ACC		=4,    // ¼ÓËÙ¶È
-    RID_DEC		=5,    // ¼õËÙ¶È
-    RID_MAX_SPD	=6,    // ×î´óËÙ¶È
-    RID_MST_ID	=7,    // ·´À¡ID
-    RID_ESC_ID	=8,    // ½ÓÊÕID
-    RID_TIMEOUT	=9,    // ³¬Ê±¾¯±¨Ê±¼ä
-    RID_CMODE	=10,   // ¿ØÖÆÄ£Ê½
-    RID_DAMP	=11,   // µç»úÕ³ÖÍÏµÊý
-    RID_INERTIA =12,   // µç»ú×ª¶¯¹ßÁ¿
-    RID_HW_VER	=13,   // ±£Áô
-    RID_SW_VER	=14,   // Èí¼þ°æ±¾ºÅ
-    RID_SN		=15,   // ±£Áô
-    RID_NPP		=16,   // µç»ú¼«¶ÔÊý
-    RID_RS		=17,   // µç×è
-    RID_LS		=18,   // µç¸Ð
-    RID_FLUX	=19,   // ´ÅÁ´
-    RID_GR		=20,   // ³ÝÂÖ¼õËÙ±È
-    RID_PMAX	=21,   // Î»ÖÃÓ³Éä·¶Î§
-    RID_VMAX	=22,   // ËÙ¶ÈÓ³Éä·¶Î§
-    RID_TMAX	=23,   // Å¤¾ØÓ³Éä·¶Î§
-    RID_I_BW	=24,   // µçÁ÷»·¿ØÖÆ´ø¿í
-    RID_KP_ASR	=25,   // ËÙ¶È»·Kp
-    RID_KI_ASR	=26,   // ËÙ¶È»·Ki
-    RID_KP_APR	=27,   // Î»ÖÃ»·Kp
-    RID_KI_APR	=28,   // Î»ÖÃ»·Ki
-    RID_OV_VALUE=29,   // ¹ýÑ¹±£»¤Öµ
-    RID_GREF	=30,   // ³ÝÂÖÁ¦¾ØÐ§ÂÊ
-    RID_DETA	=31,   // ËÙ¶È»·×èÄáÏµÊý
-    RID_V_BW	=32,   // ËÙ¶È»·ÂË²¨´ø¿í
-    RID_IQ_CL	=33,   // µçÁ÷»·ÔöÇ¿ÏµÊý
-    RID_VL_CL	=34,   // ËÙ¶È»·ÔöÇ¿ÏµÊý
-    RID_CAN_BR	=35,   // CAN²¨ÌØÂÊ´úÂë
-    RID_SUB_VER	=36,   // ×Ó°æ±¾ºÅ
-    RID_U_OFF	=50,   // uÏàÆ«ÖÃ
-    RID_V_OFF	=51,   // vÏàÆ«ÖÃ
-    RID_K1		=52,   // ²¹³¥Òò×Ó1
-    RID_K2		=53,   // ²¹³¥Òò×Ó2
-    RID_M_OFF	=54,   // ½Ç¶ÈÆ«ÒÆ
-    RID_DIR		=55,   // ·½Ïò
-    RID_P_M		=80,   // µç»úÎ»ÖÃ
-    RID_X_OUT	=81    // Êä³öÖáÎ»ÖÃ
+typedef enum
+{
+    RID_UV_VALUE = 0,  // ï¿½ï¿½Ñ¹ï¿½ï¿½ï¿½ï¿½Öµ
+    RID_KT_VALUE = 1,  // Å¤ï¿½ï¿½Ïµï¿½ï¿½
+    RID_OT_VALUE = 2,  // ï¿½ï¿½ï¿½Â±ï¿½ï¿½ï¿½Öµ
+    RID_OC_VALUE = 3,  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
+    RID_ACC = 4,       // ï¿½ï¿½ï¿½Ù¶ï¿½
+    RID_DEC = 5,       // ï¿½ï¿½ï¿½Ù¶ï¿½
+    RID_MAX_SPD = 6,   // ï¿½ï¿½ï¿½ï¿½Ù¶ï¿½
+    RID_MST_ID = 7,    // ï¿½ï¿½ï¿½ï¿½ID
+    RID_ESC_ID = 8,    // ï¿½ï¿½ï¿½ï¿½ID
+    RID_TIMEOUT = 9,   // ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½
+    RID_CMODE = 10,    // ï¿½ï¿½ï¿½ï¿½Ä£Ê½
+    RID_DAMP = 11,     // ï¿½ï¿½ï¿½Õ³ï¿½ï¿½Ïµï¿½ï¿½
+    RID_INERTIA = 12,  // ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    RID_HW_VER = 13,   // ï¿½ï¿½ï¿½ï¿½
+    RID_SW_VER = 14,   // ï¿½ï¿½ï¿½ï¿½ï¿½æ±¾ï¿½ï¿½
+    RID_SN = 15,       // ï¿½ï¿½ï¿½ï¿½
+    RID_NPP = 16,      // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    RID_RS = 17,       // ï¿½ï¿½ï¿½ï¿½
+    RID_LS = 18,       // ï¿½ï¿½ï¿½
+    RID_FLUX = 19,     // ï¿½ï¿½ï¿½ï¿½
+    RID_GR = 20,       // ï¿½ï¿½ï¿½Ö¼ï¿½ï¿½Ù±ï¿½
+    RID_PMAX = 21,     // Î»ï¿½ï¿½Ó³ï¿½ä·¶Î§
+    RID_VMAX = 22,     // ï¿½Ù¶ï¿½Ó³ï¿½ä·¶Î§
+    RID_TMAX = 23,     // Å¤ï¿½ï¿½Ó³ï¿½ä·¶Î§
+    RID_I_BW = 24,     // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ´ï¿½ï¿½ï¿½
+    RID_KP_ASR = 25,   // ï¿½Ù¶È»ï¿½Kp
+    RID_KI_ASR = 26,   // ï¿½Ù¶È»ï¿½Ki
+    RID_KP_APR = 27,   // Î»ï¿½Ã»ï¿½Kp
+    RID_KI_APR = 28,   // Î»ï¿½Ã»ï¿½Ki
+    RID_OV_VALUE = 29, // ï¿½ï¿½Ñ¹ï¿½ï¿½ï¿½ï¿½Öµ
+    RID_GREF = 30,     // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§ï¿½ï¿½
+    RID_DETA = 31,     // ï¿½Ù¶È»ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½
+    RID_V_BW = 32,     // ï¿½Ù¶È»ï¿½ï¿½Ë²ï¿½ï¿½ï¿½ï¿½ï¿½
+    RID_IQ_CL = 33,    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç¿Ïµï¿½ï¿½
+    RID_VL_CL = 34,    // ï¿½Ù¶È»ï¿½ï¿½ï¿½Ç¿Ïµï¿½ï¿½
+    RID_CAN_BR = 35,   // CANï¿½ï¿½ï¿½ï¿½ï¿½Ê´ï¿½ï¿½ï¿½
+    RID_SUB_VER = 36,  // ï¿½Ó°æ±¾ï¿½ï¿½
+    RID_U_OFF = 50,    // uï¿½ï¿½Æ«ï¿½ï¿½
+    RID_V_OFF = 51,    // vï¿½ï¿½Æ«ï¿½ï¿½
+    RID_K1 = 52,       // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1
+    RID_K2 = 53,       // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½2
+    RID_M_OFF = 54,    // ï¿½Ç¶ï¿½Æ«ï¿½ï¿½
+    RID_DIR = 55,      // ï¿½ï¿½ï¿½ï¿½
+    RID_P_M = 80,      // ï¿½ï¿½ï¿½Î»ï¿½ï¿½
+    RID_X_OUT = 81     // ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½
 } rid_e;
 
-
-
-
-// µç»ú²ÎÊý
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 typedef struct
 {
-	uint8_t read_flag;
-	uint8_t write_flag;
-	uint8_t save_flag;
-	
-    float UV_Value;		// µÍÑ¹±£»¤Öµ
-    float KT_Value;		// Å¤¾ØÏµÊý
-    float OT_Value;		// ¹ýÎÂ±£»¤Öµ
-    float OC_Value;		// ¹ýÁ÷±£»¤Öµ
-    float ACC;			// ¼ÓËÙ¶È
-    float DEC;			// ¼õËÙ¶È
-    float MAX_SPD;		// ×î´óËÙ¶È
-    uint32_t MST_ID;	// ·´À¡ID
-    uint32_t ESC_ID;	// ½ÓÊÕID
-    uint32_t TIMEOUT;	// ³¬Ê±¾¯±¨Ê±¼ä
-    uint32_t cmode;		// ¿ØÖÆÄ£Ê½
-    float  	 Damp;		// µç»úÕ³ÖÍÏµÊý
-    float    Inertia;	// µç»ú×ª¶¯¹ßÁ¿
-    uint32_t hw_ver;	// ±£Áô
-    uint32_t sw_ver;	// Èí¼þ°æ±¾ºÅ
-    uint32_t SN;		// ±£Áô
-    uint32_t NPP;		// µç»ú¼«¶ÔÊý
-    float    Rs;		// µç×è
-    float    Ls;		// µç¸Ð
-    float    Flux;		// ´ÅÁ´
-    float    Gr;		// ³ÝÂÖ¼õËÙ±È
-    float    PMAX;		// Î»ÖÃÓ³Éä·¶Î§
-    float    VMAX;		// ËÙ¶ÈÓ³Éä·¶Î§
-    float    TMAX;		// Å¤¾ØÓ³Éä·¶Î§
-    float    I_BW;		// µçÁ÷»·¿ØÖÆ´ø¿í
-    float    KP_ASR;	// ËÙ¶È»·Kp
-    float    KI_ASR;	// ËÙ¶È»·Ki
-    float    KP_APR;	// Î»ÖÃ»·Kp
-    float    KI_APR;	// Î»ÖÃ»·Ki
-    float    OV_Value;	// ¹ýÑ¹±£»¤Öµ
-    float    GREF;		// ³ÝÂÖÁ¦¾ØÐ§ÂÊ
-    float    Deta;		// ËÙ¶È»·×èÄáÏµÊý
-    float 	 V_BW;		// ËÙ¶È»·ÂË²¨´ø¿í
-    float 	 IQ_cl;		// µçÁ÷»·ÔöÇ¿ÏµÊý
-    float    VL_cl;		// ËÙ¶È»·ÔöÇ¿ÏµÊý
-    uint32_t can_br;	// CAN²¨ÌØÂÊ´úÂë
-    uint32_t sub_ver;	// ×Ó°æ±¾ºÅ
-	float 	 u_off;		// uÏàÆ«ÖÃ
-	float	 v_off;		// vÏàÆ«ÖÃ
-	float	 k1;		// ²¹³¥Òò×Ó1
-	float 	 k2;		// ²¹³¥Òò×Ó2
-	float 	 m_off;		// ½Ç¶ÈÆ«ÒÆ
-	float  	 dir;		// ·½Ïò
-	float	 p_m;		// µç»úÎ»ÖÃ
-	float	 x_out;		// Êä³öÖáÎ»ÖÃ
+    uint8_t read_flag;
+    uint8_t write_flag;
+    uint8_t save_flag;
+
+    float UV_Value;   // ï¿½ï¿½Ñ¹ï¿½ï¿½ï¿½ï¿½Öµ
+    float KT_Value;   // Å¤ï¿½ï¿½Ïµï¿½ï¿½
+    float OT_Value;   // ï¿½ï¿½ï¿½Â±ï¿½ï¿½ï¿½Öµ
+    float OC_Value;   // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
+    float ACC;        // ï¿½ï¿½ï¿½Ù¶ï¿½
+    float DEC;        // ï¿½ï¿½ï¿½Ù¶ï¿½
+    float MAX_SPD;    // ï¿½ï¿½ï¿½ï¿½Ù¶ï¿½
+    uint32_t MST_ID;  // ï¿½ï¿½ï¿½ï¿½ID
+    uint32_t ESC_ID;  // ï¿½ï¿½ï¿½ï¿½ID
+    uint32_t TIMEOUT; // ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½
+    uint32_t cmode;   // ï¿½ï¿½ï¿½ï¿½Ä£Ê½
+    float Damp;       // ï¿½ï¿½ï¿½Õ³ï¿½ï¿½Ïµï¿½ï¿½
+    float Inertia;    // ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    uint32_t hw_ver;  // ï¿½ï¿½ï¿½ï¿½
+    uint32_t sw_ver;  // ï¿½ï¿½ï¿½ï¿½ï¿½æ±¾ï¿½ï¿½
+    uint32_t SN;      // ï¿½ï¿½ï¿½ï¿½
+    uint32_t NPP;     // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    float Rs;         // ï¿½ï¿½ï¿½ï¿½
+    float Ls;         // ï¿½ï¿½ï¿½
+    float Flux;       // ï¿½ï¿½ï¿½ï¿½
+    float Gr;         // ï¿½ï¿½ï¿½Ö¼ï¿½ï¿½Ù±ï¿½
+    float PMAX;       // Î»ï¿½ï¿½Ó³ï¿½ä·¶Î§
+    float VMAX;       // ï¿½Ù¶ï¿½Ó³ï¿½ä·¶Î§
+    float TMAX;       // Å¤ï¿½ï¿½Ó³ï¿½ä·¶Î§
+    float I_BW;       // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ´ï¿½ï¿½ï¿½
+    float KP_ASR;     // ï¿½Ù¶È»ï¿½Kp
+    float KI_ASR;     // ï¿½Ù¶È»ï¿½Ki
+    float KP_APR;     // Î»ï¿½Ã»ï¿½Kp
+    float KI_APR;     // Î»ï¿½Ã»ï¿½Ki
+    float OV_Value;   // ï¿½ï¿½Ñ¹ï¿½ï¿½ï¿½ï¿½Öµ
+    float GREF;       // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§ï¿½ï¿½
+    float Deta;       // ï¿½Ù¶È»ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½
+    float V_BW;       // ï¿½Ù¶È»ï¿½ï¿½Ë²ï¿½ï¿½ï¿½ï¿½ï¿½
+    float IQ_cl;      // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç¿Ïµï¿½ï¿½
+    float VL_cl;      // ï¿½Ù¶È»ï¿½ï¿½ï¿½Ç¿Ïµï¿½ï¿½
+    uint32_t can_br;  // CANï¿½ï¿½ï¿½ï¿½ï¿½Ê´ï¿½ï¿½ï¿½
+    uint32_t sub_ver; // ï¿½Ó°æ±¾ï¿½ï¿½
+    float u_off;      // uï¿½ï¿½Æ«ï¿½ï¿½
+    float v_off;      // vï¿½ï¿½Æ«ï¿½ï¿½
+    float k1;         // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1
+    float k2;         // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½2
+    float m_off;      // ï¿½Ç¶ï¿½Æ«ï¿½ï¿½
+    float dir;        // ï¿½ï¿½ï¿½ï¿½
+    float p_m;        // ï¿½ï¿½ï¿½Î»ï¿½ï¿½
+    float x_out;      // ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½
 } esc_inf_t;
 
-// µç»ú»Ø´«ÐÅÏ¢½á¹¹Ìå
+// ï¿½ï¿½ï¿½ï¿½Ø´ï¿½ï¿½ï¿½Ï¢ï¿½á¹¹ï¿½ï¿½
 typedef struct
 {
     int id;
@@ -161,14 +157,14 @@ typedef struct
     float Tcoil;
 } motor_fbpara_t;
 
-// µç»ú²ÎÊýÉèÖÃ½á¹¹Ìå
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã½á¹¹ï¿½ï¿½
 typedef struct
 {
     uint8_t mode;
     float pos_set;
     float vel_set;
     float tor_set;
-	float cur_set;
+    float cur_set;
     float kp_set;
     float kd_set;
 } motor_ctrl_t;
@@ -176,33 +172,31 @@ typedef struct
 typedef struct
 {
     uint16_t id;
-	uint16_t mst_id;
+    uint16_t mst_id;
     motor_fbpara_t para;
     motor_ctrl_t ctrl;
-	esc_inf_t tmp;
+    esc_inf_t tmp;
 } motor_t;
-
-
 
 float uint_to_float(int x_int, float x_min, float x_max, int bits);
 int float_to_uint(float x_float, float x_min, float x_max, int bits);
-void dm_motor_ctrl_send(hcan_t* hcan, motor_t *motor);
-void dm_motor_enable(hcan_t* hcan, motor_t *motor);
-void dm_motor_disable(hcan_t* hcan, motor_t *motor);
+void dm_motor_ctrl_send(hcan_t *hcan, motor_t *motor);
+void dm_motor_enable(hcan_t *hcan, motor_t *motor);
+void dm_motor_disable(hcan_t *hcan, motor_t *motor);
 void dm_motor_clear_para(motor_t *motor);
-void dm_motor_clear_err(hcan_t* hcan, motor_t *motor);
+void dm_motor_clear_err(hcan_t *hcan, motor_t *motor);
 void dm_motor_fbdata(motor_t *motor, uint8_t *rx_data);
 
-void enable_motor_mode(hcan_t* hcan, uint16_t motor_id, uint16_t mode_id);
-void disable_motor_mode(hcan_t* hcan, uint16_t motor_id, uint16_t mode_id);
+void enable_motor_mode(hcan_t *hcan, uint16_t motor_id, uint16_t mode_id);
+void disable_motor_mode(hcan_t *hcan, uint16_t motor_id, uint16_t mode_id);
 
-void mit_ctrl(hcan_t* hcan, motor_t *motor, uint16_t motor_id, float pos, float vel,float kp, float kd, float tor);
-void pos_ctrl(hcan_t* hcan, uint16_t motor_id, float pos, float vel);
-void spd_ctrl(hcan_t* hcan, uint16_t motor_id, float vel);
-void psi_ctrl(hcan_t* hcan, uint16_t motor_id, float pos, float vel, float cur);
-	
-void save_pos_zero(hcan_t* hcan, uint16_t motor_id, uint16_t mode_id);
-void clear_err(hcan_t* hcan, uint16_t motor_id, uint16_t mode_id);
+void mit_ctrl(hcan_t *hcan, motor_t *motor, uint16_t motor_id, float pos, float vel, float kp, float kd, float tor);
+void pos_ctrl(hcan_t *hcan, uint16_t motor_id, float pos, float vel);
+void spd_ctrl(hcan_t *hcan, uint16_t motor_id, float vel);
+void psi_ctrl(hcan_t *hcan, uint16_t motor_id, float pos, float vel, float cur);
+
+void save_pos_zero(hcan_t *hcan, uint16_t motor_id, uint16_t mode_id);
+void clear_err(hcan_t *hcan, uint16_t motor_id, uint16_t mode_id);
 
 void read_motor_data(uint16_t id, uint8_t rid);
 void read_motor_ctrl_fbdata(uint16_t id);
@@ -210,4 +204,3 @@ void write_motor_data(uint16_t id, uint8_t rid, uint8_t d0, uint8_t d1, uint8_t 
 void save_motor_data(uint16_t id, uint8_t rid);
 
 #endif /* __DM_MOTOR_DRV_H__ */
-
