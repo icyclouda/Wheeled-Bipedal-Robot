@@ -8,16 +8,16 @@ motor_t motor[num];
 
 /**
 ************************************************************************
-* @brief:      	dm4310_motor_init: DM4310ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+* @brief:      	dm4310_motor_init: DM4310?
 * @param:      	void
 * @retval:     	void
-* @details:    	ï¿½ï¿½Ê¼ï¿½ï¿½1ï¿½ï¿½DM4310ï¿½ÍºÅµÄµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¬ï¿½Ï²ï¿½ï¿½ï¿½ï¿½Í¿ï¿½ï¿½ï¿½Ä£Ê½ï¿½ï¿½
-*               ï¿½ï¿½ï¿½ï¿½IDï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½
+* @details:    	?1DM4310????????
+*               ID?????
 ************************************************************************
 **/
 void dm_motor_init(void)
 {
-	// ï¿½ï¿½Ê¼ï¿½ï¿½Motor1ï¿½ï¿½Motor2ï¿½Äµï¿½ï¿½ï¿½á¹¹
+	// ?Motor1Motor2??
 	memset(&motor[Motor1], 0, sizeof(motor[Motor1]));
 	memset(&motor[Motor2], 0, sizeof(motor[Motor2]));
 	memset(&motor[Motor3], 0, sizeof(motor[Motor3]));
@@ -25,9 +25,9 @@ void dm_motor_init(void)
 	memset(&motor[Motor5], 0, sizeof(motor[Motor5]));
 	memset(&motor[Motor6], 0, sizeof(motor[Motor6]));
 
-	// ï¿½ï¿½ï¿½ï¿½Motor1ï¿½Äµï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	// Motor1??
 	motor[Motor1].id = 0x00;
-	motor[Motor1].mst_id = 0x00;	// Êµï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½Ï£ï¿½Ö»ï¿½ï¿½ï¿½ï¿½Ê¶ï¿½ï¿½ï¿½ï¿½
+	motor[Motor1].mst_id = 0x00;	// ?û???
 	motor[Motor1].tmp.read_flag = 1;
 	motor[Motor1].ctrl.mode 	= pos_mode;
 	motor[Motor1].ctrl.vel_set 	= 0.0f;
@@ -40,9 +40,9 @@ void dm_motor_init(void)
 	motor[Motor1].tmp.VMAX		= 30.0f;
 	motor[Motor1].tmp.TMAX		= 10.0f;
 
-	// ï¿½ï¿½ï¿½ï¿½Motor2ï¿½Äµï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	// Motor2??
 	motor[Motor2].id = 0x01;
-	motor[Motor2].mst_id = 0x00;	// Êµï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½Ï£ï¿½Ö»ï¿½ï¿½ï¿½ï¿½Ê¶ï¿½ï¿½ï¿½ï¿½
+	motor[Motor2].mst_id = 0x00;	// ?û???
 	motor[Motor2].tmp.read_flag = 1;
 	motor[Motor2].ctrl.mode 	= pos_mode;
 	motor[Motor2].ctrl.vel_set 	= 0.0f;
@@ -55,9 +55,9 @@ void dm_motor_init(void)
 	motor[Motor2].tmp.VMAX		= 30.0f;
 	motor[Motor2].tmp.TMAX		= 10.0f;
 
-	// ï¿½ï¿½ï¿½ï¿½Motor3ï¿½Äµï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	// Motor3??
 	motor[Motor3].id = 0x02;
-	motor[Motor3].mst_id = 0x00;	// Êµï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½Ï£ï¿½Ö»ï¿½ï¿½ï¿½ï¿½Ê¶ï¿½ï¿½ï¿½ï¿½
+	motor[Motor3].mst_id = 0x00;	// ?û???
 	motor[Motor3].tmp.read_flag = 1;
 	motor[Motor3].ctrl.mode 	= pos_mode;
 	motor[Motor3].ctrl.vel_set 	= 0.0f;
@@ -70,9 +70,9 @@ void dm_motor_init(void)
 	motor[Motor3].tmp.VMAX		= 30.0f;
 	motor[Motor3].tmp.TMAX		= 10.0f;
 
-	// ï¿½ï¿½ï¿½ï¿½Motor4ï¿½Äµï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	// Motor4??
 	motor[Motor4].id = 0x03;
-	motor[Motor4].mst_id = 0x00;	// Êµï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½Ï£ï¿½Ö»ï¿½ï¿½ï¿½ï¿½Ê¶ï¿½ï¿½ï¿½ï¿½
+	motor[Motor4].mst_id = 0x00;	// ?û???
 	motor[Motor4].tmp.read_flag = 1;
 	motor[Motor4].ctrl.mode 	= pos_mode;
 	motor[Motor4].ctrl.vel_set 	= 0.0f;
@@ -87,10 +87,10 @@ void dm_motor_init(void)
 }
 /**
 ************************************************************************
-* @brief:      	read_all_motor_data: ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¼Ä´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
-* @param:      	motor_tï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½á¹¹ï¿½ï¿½
+* @brief:      	read_all_motor_data: ????
+* @param:      	motor_t?
 * @retval:     	void
-* @details:    	ï¿½ï¿½Î·ï¿½ï¿½Í¶ï¿½È¡ï¿½ï¿½ï¿½ï¿½
+* @details:    	???
 ************************************************************************
 **/
 void read_all_motor_data(motor_t *motor)
@@ -146,11 +146,11 @@ void read_all_motor_data(motor_t *motor)
 }
 /**
 ************************************************************************
-* @brief:      	receive_motor_data: ï¿½ï¿½ï¿½Õµï¿½ï¿½ï¿½ï¿½ï¿½Øµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
-* @param:      	motor_tï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½á¹¹ï¿½ï¿½
-* @param:      	dataï¿½ï¿½ï¿½ï¿½ï¿½Õµï¿½ï¿½ï¿½ï¿½ï¿½
+* @brief:      	receive_motor_data: ???
+* @param:      	motor_t?
+* @param:      	data?
 * @retval:     	void
-* @details:    	ï¿½ï¿½Î½ï¿½ï¿½Õµï¿½ï¿½ï¿½Ø´ï¿½ï¿½Ä²ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
+* @details:    	?????
 ************************************************************************
 **/
 void receive_motor_data(motor_t *motor, uint8_t *data)
@@ -221,11 +221,11 @@ void receive_motor_data(motor_t *motor, uint8_t *data)
 
 /**
 ************************************************************************
-* @brief:      	fdcan1_rx_callback: CAN1ï¿½ï¿½ï¿½Õ»Øµï¿½ï¿½ï¿½ï¿½ï¿½
+* @brief:      	fdcan1_rx_callback: CAN1??
 * @param:      	void
 * @retval:     	void
-* @details:    	ï¿½ï¿½ï¿½ï¿½CAN1ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶Ï»Øµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý½ï¿½ï¿½Õµï¿½ï¿½ï¿½IDï¿½ï¿½ï¿½ï¿½ï¿½Ý£ï¿½Ö´ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½
-*               ï¿½ï¿½ï¿½ï¿½ï¿½Õµï¿½IDÎª0Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½dm4310_fbdataï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Motorï¿½Ä·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý¡ï¿½
+* @details:    	CAN1?????ID????
+*               ?ID?0?dm4310_fbdataMotor??
 ************************************************************************
 **/
 void fdcan1_rx_callback(void)
@@ -246,11 +246,11 @@ void fdcan1_rx_callback(void)
 
 /**
 ************************************************************************
-* @brief:      	fdcan2_rx_callback: CAN2ï¿½ï¿½ï¿½Õ»Øµï¿½ï¿½ï¿½ï¿½ï¿½
+* @brief:      	fdcan2_rx_callback: CAN2??
 * @param:      	void
 * @retval:     	void
-* @details:    	ï¿½ï¿½ï¿½ï¿½CAN2ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶Ï»Øµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý½ï¿½ï¿½Õµï¿½ï¿½ï¿½IDï¿½ï¿½ï¿½ï¿½ï¿½Ý£ï¿½Ö´ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½
-*               ï¿½ï¿½ï¿½ï¿½ï¿½Õµï¿½IDÎª0Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½dm4310_fbdataï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Motorï¿½Ä·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý¡ï¿½
+* @details:    	CAN2?????ID????
+*               ?ID?0?dm4310_fbdataMotor??
 ************************************************************************
 **/
 void fdcan2_rx_callback(void)
