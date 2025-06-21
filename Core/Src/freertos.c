@@ -28,6 +28,7 @@
 #include "BMI088driver.h"
 #include "bsp_fdcan.h"
 #include "dm_motor_ctrl.h"
+#include "vofa.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -111,6 +112,18 @@ const osThreadAttr_t Sensor_attributes = {
   .stack_size = sizeof(SensorBuffer),
   .priority = (osPriority_t) osPriorityRealtime,
 };
+/* Definitions for VOFA */
+osThreadId_t VOFAHandle;
+uint32_t myTask06Buffer[ 256 ];
+osStaticThreadDef_t myTask06ControlBlock;
+const osThreadAttr_t VOFA_attributes = {
+  .name = "VOFA",
+  .cb_mem = &myTask06ControlBlock,
+  .cb_size = sizeof(myTask06ControlBlock),
+  .stack_mem = &myTask06Buffer[0],
+  .stack_size = sizeof(myTask06Buffer),
+  .priority = (osPriority_t) osPriorityRealtime5,
+};
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -122,7 +135,9 @@ void T_Calculator(void *argument);
 void T_Motor_Control(void *argument);
 void T_USER(void *argument);
 void T_Sensor(void *argument);
+void T_VOFA(void *argument);
 
+extern void MX_USB_DEVICE_Init(void);
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
 /**
@@ -167,6 +182,9 @@ void MX_FREERTOS_Init(void) {
   /* creation of Sensor */
   SensorHandle = osThreadNew(T_Sensor, NULL, &Sensor_attributes);
 
+  /* creation of VOFA */
+  VOFAHandle = osThreadNew(T_VOFA, NULL, &VOFA_attributes);
+
   /* USER CODE BEGIN RTOS_THREADS */
     /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
@@ -186,6 +204,8 @@ void MX_FREERTOS_Init(void) {
 /* USER CODE END Header_StartDefaultTask */
 void StartDefaultTask(void *argument)
 {
+  /* init code for USB_DEVICE */
+  MX_USB_DEVICE_Init();
   /* USER CODE BEGIN StartDefaultTask */
     /* Infinite loop */
     for (;;)
@@ -208,6 +228,7 @@ void T_Calculator(void *argument)
     /* Infinite loop */
     for (;;)
     {
+
         osDelay(1);
     }
   /* USER CODE END T_Calculator */
@@ -288,6 +309,25 @@ void T_Sensor(void *argument)
         osDelay(10);
     }
   /* USER CODE END T_Sensor */
+}
+
+/* USER CODE BEGIN Header_T_VOFA */
+/**
+* @brief Function implementing the VOFA thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_T_VOFA */
+void T_VOFA(void *argument)
+{
+  /* USER CODE BEGIN T_VOFA */
+  /* Infinite loop */
+  for(;;)
+  {
+//		vofa_start();
+    osDelay(1);
+  }
+  /* USER CODE END T_VOFA */
 }
 
 /* Private application code --------------------------------------------------*/
