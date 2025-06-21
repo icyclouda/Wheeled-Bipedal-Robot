@@ -19,8 +19,10 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "cmsis_os.h"
+#include "dma.h"
 #include "fdcan.h"
 #include "memorymap.h"
+#include "spi.h"
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
@@ -93,28 +95,30 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_FDCAN1_Init();
   MX_TIM3_Init();
   MX_USART1_UART_Init();
   MX_TIM4_Init();
   MX_FDCAN2_Init();
+  MX_SPI2_Init();
   /* USER CODE BEGIN 2 */
 
-	HAL_TIM_Base_Start_IT(&htim3); // Timer3ÖÐ¶Ï£¬²»¶Ï·¢ËÍ·ÃÎÊ¼Ä´æÆ÷Êý¾ÝÖ¡
-  // ÉèÖÃ¿ØÖÆ°åµÄxt30 5V¿ØÖÆ¿Ú
-	power1(1);
-	power2(1);
+// 	HAL_TIM_Base_Start_IT(&htim3); // Timer3ï¿½Ð¶Ï£ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½Í·ï¿½ï¿½Ê¼Ä´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¡
+//   // ï¿½ï¿½ï¿½Ã¿ï¿½ï¿½Æ°ï¿½ï¿½xt30 5Vï¿½ï¿½ï¿½Æ¿ï¿½
+// 	power1(1);
+// 	power2(1);
 
-	HAL_Delay(1000);
+// 	HAL_Delay(1000);
 	
-	bsp_fdcan_set_baud(&hfdcan1, CAN_CLASS, CAN_BR_1M); // can1µÄfdcanÅäÖÃ
-	bsp_fdcan_set_baud(&hfdcan2, CAN_CLASS, CAN_BR_1M); // can2µÄfdcanÅäÖÃ
+// 	bsp_fdcan_set_baud(&hfdcan1, CAN_CLASS, CAN_BR_1M); // can1ï¿½ï¿½fdcanï¿½ï¿½ï¿½ï¿½
+// 	bsp_fdcan_set_baud(&hfdcan2, CAN_CLASS, CAN_BR_1M); // can2ï¿½ï¿½fdcanï¿½ï¿½ï¿½ï¿½
 
 
-	bsp_can_init();
-	dm_motor_init();
+// 	bsp_can_init();
+// 	dm_motor_init();
 
-	HAL_Delay(100);
+// 	HAL_Delay(100);
 
 	// write_motor_data(motor[Motor1].id, 10, mit_mode, 0, 0, 0);
 // 	HAL_Delay(100);
@@ -217,7 +221,7 @@ void SystemClock_Config(void)
 
 /**
   * @brief  Period elapsed callback in non blocking mode
-  * @note   This function is called  when TIM7 interrupt took place, inside
+  * @note   This function is called  when TIM1 interrupt took place, inside
   * HAL_TIM_IRQHandler(). It makes a direct call to HAL_IncTick() to increment
   * a global variable "uwTick" used as application time base.
   * @param  htim : TIM handle
@@ -228,7 +232,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   /* USER CODE BEGIN Callback 0 */
 
   /* USER CODE END Callback 0 */
-  if (htim->Instance == TIM7)
+  if (htim->Instance == TIM1)
   {
     HAL_IncTick();
   }

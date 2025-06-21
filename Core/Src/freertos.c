@@ -1,20 +1,20 @@
 /* USER CODE BEGIN Header */
 /**
-  ******************************************************************************
-  * File Name          : freertos.c
-  * Description        : Code for freertos applications
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2025 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * File Name          : freertos.c
+ * Description        : Code for freertos applications
+ ******************************************************************************
+ * @attention
+ *
+ * Copyright (c) 2025 STMicroelectronics.
+ * All rights reserved.
+ *
+ * This software is licensed under terms that can be found in the LICENSE file
+ * in the root directory of this software component.
+ * If no LICENSE file comes with this software, it is provided AS-IS.
+ *
+ ******************************************************************************
+ */
 /* USER CODE END Header */
 
 /* Includes ------------------------------------------------------------------*/
@@ -25,10 +25,11 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "BMI088driver.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
+typedef StaticTask_t osStaticThreadDef_t;
 /* USER CODE BEGIN PTD */
 
 /* USER CODE END PTD */
@@ -46,41 +47,67 @@
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
 
+float gyro[3], accel[3], temp, pose[3];
 /* USER CODE END Variables */
 /* Definitions for defaultTask */
 osThreadId_t defaultTaskHandle;
+uint32_t defaultTaskBuffer[ 128 ];
+osStaticThreadDef_t defaultTaskControlBlock;
 const osThreadAttr_t defaultTask_attributes = {
   .name = "defaultTask",
-  .stack_size = 128 * 4,
+  .cb_mem = &defaultTaskControlBlock,
+  .cb_size = sizeof(defaultTaskControlBlock),
+  .stack_mem = &defaultTaskBuffer[0],
+  .stack_size = sizeof(defaultTaskBuffer),
   .priority = (osPriority_t) osPriorityNormal,
 };
 /* Definitions for Calculator */
 osThreadId_t CalculatorHandle;
+uint32_t CalculatorBuffer[ 512 ];
+osStaticThreadDef_t CalculatorControlBlock;
 const osThreadAttr_t Calculator_attributes = {
   .name = "Calculator",
-  .stack_size = 512 * 4,
-  .priority = (osPriority_t) osPriorityRealtime7,
+  .cb_mem = &CalculatorControlBlock,
+  .cb_size = sizeof(CalculatorControlBlock),
+  .stack_mem = &CalculatorBuffer[0],
+  .stack_size = sizeof(CalculatorBuffer),
+  .priority = (osPriority_t) osPriorityRealtime,
 };
 /* Definitions for Motor_Control */
 osThreadId_t Motor_ControlHandle;
+uint32_t Motor_ControlBuffer[ 512 ];
+osStaticThreadDef_t Motor_ControlControlBlock;
 const osThreadAttr_t Motor_Control_attributes = {
   .name = "Motor_Control",
-  .stack_size = 512 * 4,
-  .priority = (osPriority_t) osPriorityRealtime7,
+  .cb_mem = &Motor_ControlControlBlock,
+  .cb_size = sizeof(Motor_ControlControlBlock),
+  .stack_mem = &Motor_ControlBuffer[0],
+  .stack_size = sizeof(Motor_ControlBuffer),
+  .priority = (osPriority_t) osPriorityRealtime,
 };
 /* Definitions for USER */
 osThreadId_t USERHandle;
+uint32_t USERBuffer[ 128 ];
+osStaticThreadDef_t USERControlBlock;
 const osThreadAttr_t USER_attributes = {
   .name = "USER",
-  .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityRealtime6,
+  .cb_mem = &USERControlBlock,
+  .cb_size = sizeof(USERControlBlock),
+  .stack_mem = &USERBuffer[0],
+  .stack_size = sizeof(USERBuffer),
+  .priority = (osPriority_t) osPriorityRealtime,
 };
 /* Definitions for Sensor */
 osThreadId_t SensorHandle;
+uint32_t SensorBuffer[ 512 ];
+osStaticThreadDef_t SensorControlBlock;
 const osThreadAttr_t Sensor_attributes = {
   .name = "Sensor",
-  .stack_size = 512 * 4,
-  .priority = (osPriority_t) osPriorityRealtime7,
+  .cb_mem = &SensorControlBlock,
+  .cb_size = sizeof(SensorControlBlock),
+  .stack_mem = &SensorBuffer[0],
+  .stack_size = sizeof(SensorBuffer),
+  .priority = (osPriority_t) osPriorityRealtime,
 };
 
 /* Private function prototypes -----------------------------------------------*/
@@ -107,19 +134,19 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE END Init */
 
   /* USER CODE BEGIN RTOS_MUTEX */
-  /* add mutexes, ... */
+    /* add mutexes, ... */
   /* USER CODE END RTOS_MUTEX */
 
   /* USER CODE BEGIN RTOS_SEMAPHORES */
-  /* add semaphores, ... */
+    /* add semaphores, ... */
   /* USER CODE END RTOS_SEMAPHORES */
 
   /* USER CODE BEGIN RTOS_TIMERS */
-  /* start timers, add new ones, ... */
+    /* start timers, add new ones, ... */
   /* USER CODE END RTOS_TIMERS */
 
   /* USER CODE BEGIN RTOS_QUEUES */
-  /* add queues, ... */
+    /* add queues, ... */
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
@@ -139,102 +166,108 @@ void MX_FREERTOS_Init(void) {
   SensorHandle = osThreadNew(T_Sensor, NULL, &Sensor_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
-  /* add threads, ... */
+    /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
 
   /* USER CODE BEGIN RTOS_EVENTS */
-  /* add events, ... */
+    /* add events, ... */
   /* USER CODE END RTOS_EVENTS */
 
 }
 
 /* USER CODE BEGIN Header_StartDefaultTask */
 /**
-  * @brief  Function implementing the defaultTask thread.
-  * @param  argument: Not used
-  * @retval None
-  */
+ * @brief  Function implementing the defaultTask thread.
+ * @param  argument: Not used
+ * @retval None
+ */
 /* USER CODE END Header_StartDefaultTask */
 void StartDefaultTask(void *argument)
 {
   /* USER CODE BEGIN StartDefaultTask */
-  /* Infinite loop */
-  for(;;)
-  {
-    osDelay(1);
-  }
+    /* Infinite loop */
+    for (;;)
+    {
+        osDelay(1);
+    }
   /* USER CODE END StartDefaultTask */
 }
 
 /* USER CODE BEGIN Header_T_Calculator */
 /**
-* @brief Function implementing the Calculator thread.
-* @param argument: Not used
-* @retval None
-*/
+ * @brief Function implementing the Calculator thread.
+ * @param argument: Not used
+ * @retval None
+ */
 /* USER CODE END Header_T_Calculator */
 void T_Calculator(void *argument)
 {
   /* USER CODE BEGIN T_Calculator */
-  /* Infinite loop */
-  for(;;)
-  {
-    osDelay(1);
-  }
+    /* Infinite loop */
+    for (;;)
+    {
+        osDelay(1);
+    }
   /* USER CODE END T_Calculator */
 }
 
 /* USER CODE BEGIN Header_T_Motor_Control */
 /**
-* @brief Function implementing the Motor_Control thread.
-* @param argument: Not used
-* @retval None
-*/
+ * @brief Function implementing the Motor_Control thread.
+ * @param argument: Not used
+ * @retval None
+ */
 /* USER CODE END Header_T_Motor_Control */
 void T_Motor_Control(void *argument)
 {
   /* USER CODE BEGIN T_Motor_Control */
-  /* Infinite loop */
-  for(;;)
-  {
-    osDelay(1);
-  }
+    /* Infinite loop */
+    for (;;)
+    {
+        osDelay(1);
+    }
   /* USER CODE END T_Motor_Control */
 }
 
 /* USER CODE BEGIN Header_T_USER */
 /**
-* @brief Function implementing the USER thread.
-* @param argument: Not used
-* @retval None
-*/
+ * @brief Function implementing the USER thread.
+ * @param argument: Not used
+ * @retval None
+ */
 /* USER CODE END Header_T_USER */
 void T_USER(void *argument)
 {
   /* USER CODE BEGIN T_USER */
-  /* Infinite loop */
-  for(;;)
-  {
-    osDelay(1);
-  }
+    /* Infinite loop */
+    for (;;)
+    {
+        osDelay(1);
+    }
   /* USER CODE END T_USER */
 }
 
 /* USER CODE BEGIN Header_T_Sensor */
 /**
-* @brief Function implementing the Sensor thread.
-* @param argument: Not used
-* @retval None
-*/
+ * @brief Function implementing the Sensor thread.
+ * @param argument: Not used
+ * @retval None
+ */
 /* USER CODE END Header_T_Sensor */
 void T_Sensor(void *argument)
 {
   /* USER CODE BEGIN T_Sensor */
-  /* Infinite loop */
-  for(;;)
-  {
-    osDelay(1);
-  }
+    /* Infinite loop */
+    osDelay(500);
+    while (BMI088_init())
+    {
+        ;
+    }
+    for (;;)
+    {
+        BMI088_read(gyro, accel, &temp, pose, 0.01);
+        osDelay(10);
+    }
   /* USER CODE END T_Sensor */
 }
 
