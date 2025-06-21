@@ -29,8 +29,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "bsp_fdcan.h"
-#include "dm_motor_ctrl.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -104,33 +103,6 @@ int main(void)
   MX_SPI2_Init();
   /* USER CODE BEGIN 2 */
 
-// 	HAL_TIM_Base_Start_IT(&htim3); // Timer3�жϣ����Ϸ��ͷ��ʼĴ�������֡
-//   // ���ÿ��ư��xt30 5V���ƿ�
-// 	power1(1);
-// 	power2(1);
-
-// 	HAL_Delay(1000);
-	
-// 	bsp_fdcan_set_baud(&hfdcan1, CAN_CLASS, CAN_BR_1M); // can1��fdcan����
-// 	bsp_fdcan_set_baud(&hfdcan2, CAN_CLASS, CAN_BR_1M); // can2��fdcan����
-
-
-// 	bsp_can_init();
-// 	dm_motor_init();
-
-// 	HAL_Delay(100);
-
-	// write_motor_data(motor[Motor1].id, 10, mit_mode, 0, 0, 0);
-// 	HAL_Delay(100);
-// //	write_motor_data(motor[Motor1].id, 35, CAN_BR_5M, 0, 0, 0);
-// //	HAL_Delay(100);
-// 	read_motor_data(motor[Motor1].id, RID_CAN_BR); 
-// 	dm_motor_disable(&hfdcan1, &motor[Motor1]);
-// 	HAL_Delay(100);
-// 	save_motor_data(motor[Motor1].id, 10);
-
-	// HAL_Delay(100);
-	// read_all_motor_data(&motor[Motor1]);
   /* USER CODE END 2 */
 
   /* Init scheduler */

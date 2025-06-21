@@ -3,266 +3,568 @@
 #include "string.h"
 #include "stdbool.h"
 
-motor_t motor[num];
-
+motor_t L_motor[num];
+motor_t R_motor[num];
 
 /**
 ************************************************************************
-* @brief:      	dm4310_motor_init: DM4310?
+* @brief:      	dm4310_motor_init: DM4310ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 * @param:      	void
 * @retval:     	void
-* @details:    	?1DM4310????????
-*               ID?????
+* @details:    	ï¿½ï¿½?ï¿½ï¿½1ï¿½ï¿½DM4310ï¿½???ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½?ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½??ï¿½ï¿½
+*               ï¿½ï¿½ï¿½ï¿½IDï¿½ï¿½ï¿½ï¿½ï¿½ï¿½??ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½??ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½
 ************************************************************************
 **/
 void dm_motor_init(void)
 {
-	// ?Motor1Motor2??
-	memset(&motor[Motor1], 0, sizeof(motor[Motor1]));
-	memset(&motor[Motor2], 0, sizeof(motor[Motor2]));
-	memset(&motor[Motor3], 0, sizeof(motor[Motor3]));
-	memset(&motor[Motor4], 0, sizeof(motor[Motor4]));
-	memset(&motor[Motor5], 0, sizeof(motor[Motor5]));
-	memset(&motor[Motor6], 0, sizeof(motor[Motor6]));
+    // ï¿½ï¿½?ï¿½ï¿½Motor1ï¿½ï¿½Motor2ï¿½?ï¿½ï¿½ï¿½?
+    memset(&L_motor[ROLL], 0, sizeof(L_motor[ROLL]));
+    memset(&L_motor[PITCH], 0, sizeof(L_motor[PITCH]));
+    memset(&L_motor[KNEE], 0, sizeof(L_motor[KNEE]));
+    memset(&L_motor[WHEEL], 0, sizeof(L_motor[WHEEL]));
+    
+    memset(&R_motor[ROLL], 0, sizeof(R_motor[ROLL]));
+    memset(&R_motor[PITCH], 0, sizeof(R_motor[PITCH]));
+    memset(&R_motor[KNEE], 0, sizeof(R_motor[KNEE]));
+    memset(&R_motor[WHEEL], 0, sizeof(R_motor[WHEEL]));
 
-	// Motor1??
-	motor[Motor1].id = 0x00;
-	motor[Motor1].mst_id = 0x00;	// ?û???
-	motor[Motor1].tmp.read_flag = 1;
-	motor[Motor1].ctrl.mode 	= pos_mode;
-	motor[Motor1].ctrl.vel_set 	= 0.0f;
-	motor[Motor1].ctrl.pos_set 	= 0.0f;
-	motor[Motor1].ctrl.tor_set 	= 0.0f;
-	motor[Motor1].ctrl.cur_set 	= 0.02f;
-	motor[Motor1].ctrl.kp_set 	= 0.0f;
-	motor[Motor1].ctrl.kd_set 	= 0.0f;
-	motor[Motor1].tmp.PMAX		= 12.5f;
-	motor[Motor1].tmp.VMAX		= 30.0f;
-	motor[Motor1].tmp.TMAX		= 10.0f;
+    L_motor[ROLL].id = 0x00;
+    L_motor[ROLL].mst_id = 0x00;
+    L_motor[ROLL].tmp.read_flag = 1;
+    L_motor[ROLL].ctrl.mode = mit_mode;
+    L_motor[ROLL].ctrl.vel_set = 0.0f;
+    L_motor[ROLL].ctrl.pos_set = 0.0f;
+    L_motor[ROLL].ctrl.tor_set = 0.0f;
+    L_motor[ROLL].ctrl.cur_set = 0.02f;
+    L_motor[ROLL].ctrl.kp_set = 0.0f;
+    L_motor[ROLL].ctrl.kd_set = 0.0f;
+    L_motor[ROLL].tmp.PMAX = 12.5f;
+    L_motor[ROLL].tmp.VMAX = 30.0f;
+    L_motor[ROLL].tmp.TMAX = 10.0f;
 
-	// Motor2??
-	motor[Motor2].id = 0x01;
-	motor[Motor2].mst_id = 0x00;	// ?û???
-	motor[Motor2].tmp.read_flag = 1;
-	motor[Motor2].ctrl.mode 	= pos_mode;
-	motor[Motor2].ctrl.vel_set 	= 0.0f;
-	motor[Motor2].ctrl.pos_set 	= 0.0f;
-	motor[Motor2].ctrl.tor_set 	= 0.0f;
-	motor[Motor2].ctrl.cur_set 	= 0.02f;
-	motor[Motor2].ctrl.kp_set 	= 0.0f;
-	motor[Motor2].ctrl.kd_set 	= 0.0f;
-	motor[Motor2].tmp.PMAX		= 12.5f;
-	motor[Motor2].tmp.VMAX		= 30.0f;
-	motor[Motor2].tmp.TMAX		= 10.0f;
+    R_motor[ROLL].id = 0x00;
+    R_motor[ROLL].mst_id = 0x00; // ?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½?ï¿½ï¿½ï¿½ï¿½?Rï¿½ï¿½ï¿½
+    R_motor[ROLL].tmp.read_flag = 1;
+    R_motor[ROLL].ctrl.mode = mit_mode;
+    R_motor[ROLL].ctrl.vel_set = 0.0f;
+    R_motor[ROLL].ctrl.pos_set = 0.0f;
+    R_motor[ROLL].ctrl.tor_set = 0.0f;
+    R_motor[ROLL].ctrl.cur_set = 0.02f;
+    R_motor[ROLL].ctrl.kp_set = 0.0f;
+    R_motor[ROLL].ctrl.kd_set = 0.0f;
+    R_motor[ROLL].tmp.PMAX = 12.5f;
+    R_motor[ROLL].tmp.VMAX = 30.0f;
+    R_motor[ROLL].tmp.TMAX = 10.0f;
 
-	// Motor3??
-	motor[Motor3].id = 0x02;
-	motor[Motor3].mst_id = 0x00;	// ?û???
-	motor[Motor3].tmp.read_flag = 1;
-	motor[Motor3].ctrl.mode 	= pos_mode;
-	motor[Motor3].ctrl.vel_set 	= 0.0f;
-	motor[Motor3].ctrl.pos_set 	= 0.0f;
-	motor[Motor3].ctrl.tor_set 	= 0.0f;
-	motor[Motor3].ctrl.cur_set 	= 0.02f;
-	motor[Motor3].ctrl.kp_set 	= 0.0f;
-	motor[Motor3].ctrl.kd_set 	= 0.0f;
-	motor[Motor3].tmp.PMAX		= 12.5f;
-	motor[Motor3].tmp.VMAX		= 30.0f;
-	motor[Motor3].tmp.TMAX		= 10.0f;
+    L_motor[PITCH].id = 0x01;
+    L_motor[PITCH].mst_id = 0x00; // ?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½?ï¿½ï¿½ï¿½ï¿½?L_motor
+    L_motor[PITCH].tmp.read_flag = 1;
+    L_motor[PITCH].ctrl.mode = mit_mode;
+    L_motor[PITCH].ctrl.vel_set = 0.0f;
+    L_motor[PITCH].ctrl.pos_set = 0.0f;
+    L_motor[PITCH].ctrl.tor_set = 0.0f;
+    L_motor[PITCH].ctrl.cur_set = 0.02f;
+    L_motor[PITCH].ctrl.kp_set = 0.0f;
+    L_motor[PITCH].ctrl.kd_set = 0.0f;
+    L_motor[PITCH].tmp.PMAX = 12.5f;
+    L_motor[PITCH].tmp.VMAX = 30.0f;
+    L_motor[PITCH].tmp.TMAX = 10.0f;
 
-	// Motor4??
-	motor[Motor4].id = 0x03;
-	motor[Motor4].mst_id = 0x00;	// ?û???
-	motor[Motor4].tmp.read_flag = 1;
-	motor[Motor4].ctrl.mode 	= pos_mode;
-	motor[Motor4].ctrl.vel_set 	= 0.0f;
-	motor[Motor4].ctrl.pos_set 	= 0.0f;
-	motor[Motor4].ctrl.tor_set 	= 0.0f;
-	motor[Motor4].ctrl.cur_set 	= 0.02f;
-	motor[Motor4].ctrl.kp_set 	= 0.0f;
-	motor[Motor4].ctrl.kd_set 	= 0.0f;
-	motor[Motor4].tmp.PMAX		= 12.5f;
-	motor[Motor4].tmp.VMAX		= 30.0f;
-	motor[Motor4].tmp.TMAX		= 10.0f;
+    R_motor[PITCH].id = 0x01;
+    R_motor[PITCH].mst_id = 0x00; // ?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½?ï¿½ï¿½ï¿½ï¿½?R_motor
+    R_motor[PITCH].tmp.read_flag = 1;
+    R_motor[PITCH].ctrl.mode = mit_mode;
+    R_motor[PITCH].ctrl.vel_set = 0.0f;
+    R_motor[PITCH].ctrl.pos_set = 0.0f;
+    R_motor[PITCH].ctrl.tor_set = 0.0f;
+    R_motor[PITCH].ctrl.cur_set = 0.02f;
+    R_motor[PITCH].ctrl.kp_set = 0.0f;
+    R_motor[PITCH].ctrl.kd_set = 0.0f;
+    R_motor[PITCH].tmp.PMAX = 12.5f;
+    R_motor[PITCH].tmp.VMAX = 30.0f;
+    R_motor[PITCH].tmp.TMAX = 10.0f;
+
+    L_motor[KNEE].id = 0x02;
+    L_motor[KNEE].mst_id = 0x00; // ?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½?ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½
+    L_motor[KNEE].tmp.read_flag = 1;
+    L_motor[KNEE].ctrl.mode = mit_mode;
+    L_motor[KNEE].ctrl.vel_set = 0.0f;
+    L_motor[KNEE].ctrl.pos_set = 0.0f;
+    L_motor[KNEE].ctrl.tor_set = 0.0f;
+    L_motor[KNEE].ctrl.cur_set = 0.02f;
+    L_motor[KNEE].ctrl.kp_set = 0.0f;
+    L_motor[KNEE].ctrl.kd_set = 0.0f;
+    L_motor[KNEE].tmp.PMAX = 12.5f;
+    L_motor[KNEE].tmp.VMAX = 30.0f;
+    L_motor[KNEE].tmp.TMAX = 10.0f;
+
+    R_motor[KNEE].id = 0x02;
+    R_motor[KNEE].mst_id = 0x00; // ?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½?ï¿½ï¿½ï¿½ï¿½?Rï¿½ï¿½ï¿½
+    R_motor[KNEE].tmp.read_flag = 1;
+    R_motor[KNEE].ctrl.mode = mit_mode;
+    R_motor[KNEE].ctrl.vel_set = 0.0f;
+    R_motor[KNEE].ctrl.pos_set = 0.0f;
+    R_motor[KNEE].ctrl.tor_set = 0.0f;
+    R_motor[KNEE].ctrl.cur_set = 0.02f;
+    R_motor[KNEE].ctrl.kp_set = 0.0f;
+    R_motor[KNEE].ctrl.kd_set = 0.0f;
+    R_motor[KNEE].tmp.PMAX = 12.5f;
+    R_motor[KNEE].tmp.VMAX = 30.0f;
+    R_motor[KNEE].tmp.TMAX = 10.0f;
+
+    L_motor[WHEEL].id = 0x03;
+    L_motor[WHEEL].mst_id = 0x00; // ?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½?ï¿½ï¿½ï¿½ï¿½?L_motor
+    L_motor[WHEEL].tmp.read_flag = 1;
+    L_motor[WHEEL].ctrl.mode = mit_mode;
+    L_motor[WHEEL].ctrl.vel_set = 0.0f;
+    L_motor[WHEEL].ctrl.pos_set = 0.0f;
+    L_motor[WHEEL].ctrl.tor_set = 0.0f;
+    L_motor[WHEEL].ctrl.cur_set = 0.02f;
+    L_motor[WHEEL].ctrl.kp_set = 0.0f;
+    L_motor[WHEEL].ctrl.kd_set = 0.0f;
+    L_motor[WHEEL].tmp.PMAX = 12.5f;
+    L_motor[WHEEL].tmp.VMAX = 30.0f;
+    L_motor[WHEEL].tmp.TMAX = 10.0f;
+
+    R_motor[WHEEL].id = 0x03;
+    R_motor[WHEEL].mst_id = 0x00; // ?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½?ï¿½ï¿½ï¿½ï¿½?R_motor
+    R_motor[WHEEL].tmp.read_flag = 1;
+    R_motor[WHEEL].ctrl.mode = mit_mode;
+    R_motor[WHEEL].ctrl.vel_set = 0.0f;
+    R_motor[WHEEL].ctrl.pos_set = 0.0f;
+    R_motor[WHEEL].ctrl.tor_set = 0.0f;
+    R_motor[WHEEL].ctrl.cur_set = 0.02f;
+    R_motor[WHEEL].ctrl.kp_set = 0.0f;
+    R_motor[WHEEL].ctrl.kd_set = 0.0f;
+    R_motor[WHEEL].tmp.PMAX = 12.5f;
+    R_motor[WHEEL].tmp.VMAX = 30.0f;
+    R_motor[WHEEL].tmp.TMAX = 10.0f;
 }
 /**
 ************************************************************************
-* @brief:      	read_all_motor_data: ????
-* @param:      	motor_t?
+* @brief:      	read_aldata: ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½??ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?
+* @param:      	motor_tï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½
 * @retval:     	void
-* @details:    	???
+* @details:    	ï¿½ï¿½?ï¿½ï¿½?ï¿½?ï¿½ï¿½ï¿½ï¿½
 ************************************************************************
 **/
-void read_all_motor_data(motor_t *motor)
+void read_aldata(motor_t *motor)
 {
     switch (motor->tmp.read_flag)
     {
-		case 1:  read_motor_data(motor->id, RID_UV_VALUE);  break; // UV_Value
-		case 2:  read_motor_data(motor->id, RID_KT_VALUE);  break; // KT_Value
-		case 3:  read_motor_data(motor->id, RID_OT_VALUE);  break; // OT_Value
-		case 4:  read_motor_data(motor->id, RID_OC_VALUE);  break; // OC_Value
-		case 5:  read_motor_data(motor->id, RID_ACC);       break; // ACC
-		case 6:  read_motor_data(motor->id, RID_DEC);       break; // DEC
-		case 7:  read_motor_data(motor->id, RID_MAX_SPD);   break; // MAX_SPD
-		case 8:  read_motor_data(motor->id, RID_MST_ID);    break; // MST_ID 
-		case 9:  read_motor_data(motor->id, RID_ESC_ID);    break; // ESC_ID
-		case 10: read_motor_data(motor->id, RID_TIMEOUT);   break; // TIMEOUT 
-		case 11: read_motor_data(motor->id, RID_CMODE);     break; // CTRL_MODE 
-		case 12: read_motor_data(motor->id, RID_DAMP);      break; // Damp 
-		case 13: read_motor_data(motor->id, RID_INERTIA);   break; // Inertia
-		case 14: read_motor_data(motor->id, RID_HW_VER);    break; // Rsv1 
-		case 15: read_motor_data(motor->id, RID_SW_VER);    break; // sw_ver 
-		case 16: read_motor_data(motor->id, RID_SN);        break; // Rsv2 
-		case 17: read_motor_data(motor->id, RID_NPP);       break; // NPP 
-		case 18: read_motor_data(motor->id, RID_RS);        break; // Rs 
-		case 19: read_motor_data(motor->id, RID_LS);        break; // Ls 
-		case 20: read_motor_data(motor->id, RID_FLUX);      break; // Flux 
-		case 21: read_motor_data(motor->id, RID_GR);        break; // Gr 
-		case 22: read_motor_data(motor->id, RID_PMAX);      break; // PMAX 
-		case 23: read_motor_data(motor->id, RID_VMAX);      break; // VMAX 
-		case 24: read_motor_data(motor->id, RID_TMAX);      break; // TMAX 
-		case 25: read_motor_data(motor->id, RID_I_BW);      break; // I_BW 
-		case 26: read_motor_data(motor->id, RID_KP_ASR);    break; // KP_ASR 
-		case 27: read_motor_data(motor->id, RID_KI_ASR);    break; // KI_ASR 
-		case 28: read_motor_data(motor->id, RID_KP_APR);    break; // KP_APR 
-		case 29: read_motor_data(motor->id, RID_KI_APR);    break; // KI_APR 
-		case 30: read_motor_data(motor->id, RID_OV_VALUE);  break; // OV_Value 
-		case 31: read_motor_data(motor->id, RID_GREF);      break; // GREF 
-		case 32: read_motor_data(motor->id, RID_DETA);      break; // Deta 
-		case 33: read_motor_data(motor->id, RID_V_BW);      break; // V_BW 
-		case 34: read_motor_data(motor->id, RID_IQ_CL);     break; // IQ_c1 
-		case 35: read_motor_data(motor->id, RID_VL_CL);     break; // VL_c1 
-		case 36: read_motor_data(motor->id, RID_CAN_BR);    break; // can_br 
-		case 37: read_motor_data(motor->id, RID_SUB_VER);   break; // sub_ver 
-		case 38: read_motor_data(motor->id, RID_U_OFF);     break; // u_off 
-		case 39: read_motor_data(motor->id, RID_V_OFF);     break; // v_off 
-		case 40: read_motor_data(motor->id, RID_K1);        break; // k1 
-		case 41: read_motor_data(motor->id, RID_K2);        break; // k2 
-		case 42: read_motor_data(motor->id, RID_M_OFF);     break; // m_off 
-		case 43: read_motor_data(motor->id, RID_DIR);       break; // dir 
-		case 44: read_motor_data(motor->id, RID_P_M);       break; // pm 
-		case 45: read_motor_data(motor->id, RID_X_OUT);     break; // xout 
+    case 1:
+        read_motor_data(motor->id, RID_UV_VALUE);
+        break; // UV_Value
+    case 2:
+        read_motor_data(motor->id, RID_KT_VALUE);
+        break; // KT_Value
+    case 3:
+        read_motor_data(motor->id, RID_OT_VALUE);
+        break; // OT_Value
+    case 4:
+        read_motor_data(motor->id, RID_OC_VALUE);
+        break; // OC_Value
+    case 5:
+        read_motor_data(motor->id, RID_ACC);
+        break; // ACC
+    case 6:
+        read_motor_data(motor->id, RID_DEC);
+        break; // DEC
+    case 7:
+        read_motor_data(motor->id, RID_MAX_SPD);
+        break; // MAX_SPD
+    case 8:
+        read_motor_data(motor->id, RID_MST_ID);
+        break; // MST_ID
+    case 9:
+        read_motor_data(motor->id, RID_ESC_ID);
+        break; // ESC_ID
+    case 10:
+        read_motor_data(motor->id, RID_TIMEOUT);
+        break; // TIMEOUT
+    case 11:
+        read_motor_data(motor->id, RID_CMODE);
+        break; // CTRL_MODE
+    case 12:
+        read_motor_data(motor->id, RID_DAMP);
+        break; // Damp
+    case 13:
+        read_motor_data(motor->id, RID_INERTIA);
+        break; // Inertia
+    case 14:
+        read_motor_data(motor->id, RID_HW_VER);
+        break; // Rsv1
+    case 15:
+        read_motor_data(motor->id, RID_SW_VER);
+        break; // sw_ver
+    case 16:
+        read_motor_data(motor->id, RID_SN);
+        break; // Rsv2
+    case 17:
+        read_motor_data(motor->id, RID_NPP);
+        break; // NPP
+    case 18:
+        read_motor_data(motor->id, RID_RS);
+        break; // Rs
+    case 19:
+        read_motor_data(motor->id, RID_LS);
+        break; // Ls
+    case 20:
+        read_motor_data(motor->id, RID_FLUX);
+        break; // Flux
+    case 21:
+        read_motor_data(motor->id, RID_GR);
+        break; // Gr
+    case 22:
+        read_motor_data(motor->id, RID_PMAX);
+        break; // PMAX
+    case 23:
+        read_motor_data(motor->id, RID_VMAX);
+        break; // VMAX
+    case 24:
+        read_motor_data(motor->id, RID_TMAX);
+        break; // TMAX
+    case 25:
+        read_motor_data(motor->id, RID_I_BW);
+        break; // I_BW
+    case 26:
+        read_motor_data(motor->id, RID_KP_ASR);
+        break; // KP_ASR
+    case 27:
+        read_motor_data(motor->id, RID_KI_ASR);
+        break; // KI_ASR
+    case 28:
+        read_motor_data(motor->id, RID_KP_APR);
+        break; // KP_APR
+    case 29:
+        read_motor_data(motor->id, RID_KI_APR);
+        break; // KI_APR
+    case 30:
+        read_motor_data(motor->id, RID_OV_VALUE);
+        break; // OV_Value
+    case 31:
+        read_motor_data(motor->id, RID_GREF);
+        break; // GREF
+    case 32:
+        read_motor_data(motor->id, RID_DETA);
+        break; // Deta
+    case 33:
+        read_motor_data(motor->id, RID_V_BW);
+        break; // V_BW
+    case 34:
+        read_motor_data(motor->id, RID_IQ_CL);
+        break; // IQ_c1
+    case 35:
+        read_motor_data(motor->id, RID_VL_CL);
+        break; // VL_c1
+    case 36:
+        read_motor_data(motor->id, RID_CAN_BR);
+        break; // can_br
+    case 37:
+        read_motor_data(motor->id, RID_SUB_VER);
+        break; // sub_ver
+    case 38:
+        read_motor_data(motor->id, RID_U_OFF);
+        break; // u_off
+    case 39:
+        read_motor_data(motor->id, RID_V_OFF);
+        break; // v_off
+    case 40:
+        read_motor_data(motor->id, RID_K1);
+        break; // k1
+    case 41:
+        read_motor_data(motor->id, RID_K2);
+        break; // k2
+    case 42:
+        read_motor_data(motor->id, RID_M_OFF);
+        break; // m_off
+    case 43:
+        read_motor_data(motor->id, RID_DIR);
+        break; // dir
+    case 44:
+        read_motor_data(motor->id, RID_P_M);
+        break; // pm
+    case 45:
+        read_motor_data(motor->id, RID_X_OUT);
+        break; // xout
     }
 }
 /**
 ************************************************************************
-* @brief:      	receive_motor_data: ???
-* @param:      	motor_t?
-* @param:      	data?
+* @brief:      	receive_motor_data: ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?
+* @param:      	motor_tï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½
+* @param:      	dataï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½ï¿½
 * @retval:     	void
-* @details:    	?????
+* @details:    	ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½ï¿½?
 ************************************************************************
 **/
 void receive_motor_data(motor_t *motor, uint8_t *data)
 {
-	if(motor->tmp.read_flag == 0)
-		return ;
-	
-	float_type_u y;
-	
-	if(data[2] == 0x33)
-	{
-		uint16_t rid_value = data[3];
-		y.b_val[0] = data[4];
-		y.b_val[1] = data[5];
-		y.b_val[2] = data[6];
-		y.b_val[3] = data[7];
-		
-		switch (rid_value) 
-		{
-			case RID_UV_VALUE: motor->tmp.UV_Value = y.f_val; motor->tmp.read_flag =  2; break;
-			case RID_KT_VALUE: motor->tmp.KT_Value = y.f_val; motor->tmp.read_flag =  3; break;
-			case RID_OT_VALUE: motor->tmp.OT_Value = y.f_val; motor->tmp.read_flag =  4; break;
-			case RID_OC_VALUE: motor->tmp.OC_Value = y.f_val; motor->tmp.read_flag =  5; break;
-			case RID_ACC:      motor->tmp.ACC      = y.f_val; motor->tmp.read_flag =  6; break;
-			case RID_DEC:      motor->tmp.DEC      = y.f_val; motor->tmp.read_flag =  7; break;
-			case RID_MAX_SPD:  motor->tmp.MAX_SPD  = y.f_val; motor->tmp.read_flag =  8; break;
-			case RID_MST_ID:   motor->tmp.MST_ID   = y.u_val; motor->tmp.read_flag =  9; break;
-			case RID_ESC_ID:   motor->tmp.ESC_ID   = y.u_val; motor->tmp.read_flag = 10; break;
-			case RID_TIMEOUT:  motor->tmp.TIMEOUT  = y.u_val; motor->tmp.read_flag = 11; break;
-			case RID_CMODE:    motor->tmp.cmode    = y.u_val; motor->tmp.read_flag = 12; break;
-			case RID_DAMP:     motor->tmp.Damp     = y.f_val; motor->tmp.read_flag = 13; break;
-			case RID_INERTIA:  motor->tmp.Inertia  = y.f_val; motor->tmp.read_flag = 14; break;
-			case RID_HW_VER:   motor->tmp.hw_ver   = y.u_val; motor->tmp.read_flag = 15; break;
-			case RID_SW_VER:   motor->tmp.sw_ver   = y.u_val; motor->tmp.read_flag = 16; break;
-			case RID_SN:       motor->tmp.SN       = y.u_val; motor->tmp.read_flag = 17; break;
-			case RID_NPP:      motor->tmp.NPP      = y.u_val; motor->tmp.read_flag = 18; break;
-			case RID_RS:       motor->tmp.Rs       = y.f_val; motor->tmp.read_flag = 19; break;
-			case RID_LS:       motor->tmp.Ls       = y.f_val; motor->tmp.read_flag = 20; break;
-			case RID_FLUX:     motor->tmp.Flux     = y.f_val; motor->tmp.read_flag = 21; break;
-			case RID_GR:       motor->tmp.Gr       = y.f_val; motor->tmp.read_flag = 22; break;
-			case RID_PMAX:     motor->tmp.PMAX     = y.f_val; motor->tmp.read_flag = 23; break;
-			case RID_VMAX:     motor->tmp.VMAX     = y.f_val; motor->tmp.read_flag = 24; break;
-			case RID_TMAX:     motor->tmp.TMAX     = y.f_val; motor->tmp.read_flag = 25; break;
-			case RID_I_BW:     motor->tmp.I_BW     = y.f_val; motor->tmp.read_flag = 26; break;
-			case RID_KP_ASR:   motor->tmp.KP_ASR   = y.f_val; motor->tmp.read_flag = 27; break;
-			case RID_KI_ASR:   motor->tmp.KI_ASR   = y.f_val; motor->tmp.read_flag = 28; break;
-			case RID_KP_APR:   motor->tmp.KP_APR   = y.f_val; motor->tmp.read_flag = 29; break;
-			case RID_KI_APR:   motor->tmp.KI_APR   = y.f_val; motor->tmp.read_flag = 30; break;
-			case RID_OV_VALUE: motor->tmp.OV_Value = y.f_val; motor->tmp.read_flag = 31; break;
-			case RID_GREF:     motor->tmp.GREF     = y.f_val; motor->tmp.read_flag = 32; break;
-			case RID_DETA:     motor->tmp.Deta     = y.f_val; motor->tmp.read_flag = 33; break;
-			case RID_V_BW:     motor->tmp.V_BW     = y.f_val; motor->tmp.read_flag = 34; break;
-			case RID_IQ_CL:    motor->tmp.IQ_cl    = y.f_val; motor->tmp.read_flag = 35; break;
-			case RID_VL_CL:    motor->tmp.VL_cl    = y.f_val; motor->tmp.read_flag = 36; break;
-			case RID_CAN_BR:   motor->tmp.can_br   = y.u_val; motor->tmp.read_flag = 37; break;
-			case RID_SUB_VER:  motor->tmp.sub_ver  = y.u_val; motor->tmp.read_flag = 38; break;
-			case RID_U_OFF:    motor->tmp.u_off    = y.f_val; motor->tmp.read_flag = 39; break;
-			case RID_V_OFF:    motor->tmp.v_off    = y.f_val; motor->tmp.read_flag = 40; break;
-			case RID_K1:       motor->tmp.k1       = y.f_val; motor->tmp.read_flag = 41; break;
-			case RID_K2:       motor->tmp.k2       = y.f_val; motor->tmp.read_flag = 42; break;
-			case RID_M_OFF:    motor->tmp.m_off    = y.f_val; motor->tmp.read_flag = 43; break;
-			case RID_DIR:      motor->tmp.dir      = y.f_val; motor->tmp.read_flag = 44; break;
-			case RID_P_M:      motor->tmp.p_m      = y.f_val; motor->tmp.read_flag = 45; break;
-			case RID_X_OUT:    motor->tmp.x_out    = y.f_val; motor->tmp.read_flag = 0 ; break;
-		}
-	}
+    if (motor->tmp.read_flag == 0)
+        return;
+
+    float_type_u y;
+
+    if (data[2] == 0x33)
+    {
+        uint16_t rid_value = data[3];
+        y.b_val[0] = data[4];
+        y.b_val[1] = data[5];
+        y.b_val[2] = data[6];
+        y.b_val[3] = data[7];
+
+        switch (rid_value)
+        {
+        case RID_UV_VALUE:
+            motor->tmp.UV_Value = y.f_val;
+            motor->tmp.read_flag = 2;
+            break;
+        case RID_KT_VALUE:
+            motor->tmp.KT_Value = y.f_val;
+            motor->tmp.read_flag = 3;
+            break;
+        case RID_OT_VALUE:
+            motor->tmp.OT_Value = y.f_val;
+            motor->tmp.read_flag = 4;
+            break;
+        case RID_OC_VALUE:
+            motor->tmp.OC_Value = y.f_val;
+            motor->tmp.read_flag = 5;
+            break;
+        case RID_ACC:
+            motor->tmp.ACC = y.f_val;
+            motor->tmp.read_flag = 6;
+            break;
+        case RID_DEC:
+            motor->tmp.DEC = y.f_val;
+            motor->tmp.read_flag = 7;
+            break;
+        case RID_MAX_SPD:
+            motor->tmp.MAX_SPD = y.f_val;
+            motor->tmp.read_flag = 8;
+            break;
+        case RID_MST_ID:
+            motor->tmp.MST_ID = y.u_val;
+            motor->tmp.read_flag = 9;
+            break;
+        case RID_ESC_ID:
+            motor->tmp.ESC_ID = y.u_val;
+            motor->tmp.read_flag = 10;
+            break;
+        case RID_TIMEOUT:
+            motor->tmp.TIMEOUT = y.u_val;
+            motor->tmp.read_flag = 11;
+            break;
+        case RID_CMODE:
+            motor->tmp.cmode = y.u_val;
+            motor->tmp.read_flag = 12;
+            break;
+        case RID_DAMP:
+            motor->tmp.Damp = y.f_val;
+            motor->tmp.read_flag = 13;
+            break;
+        case RID_INERTIA:
+            motor->tmp.Inertia = y.f_val;
+            motor->tmp.read_flag = 14;
+            break;
+        case RID_HW_VER:
+            motor->tmp.hw_ver = y.u_val;
+            motor->tmp.read_flag = 15;
+            break;
+        case RID_SW_VER:
+            motor->tmp.sw_ver = y.u_val;
+            motor->tmp.read_flag = 16;
+            break;
+        case RID_SN:
+            motor->tmp.SN = y.u_val;
+            motor->tmp.read_flag = 17;
+            break;
+        case RID_NPP:
+            motor->tmp.NPP = y.u_val;
+            motor->tmp.read_flag = 18;
+            break;
+        case RID_RS:
+            motor->tmp.Rs = y.f_val;
+            motor->tmp.read_flag = 19;
+            break;
+        case RID_LS:
+            motor->tmp.Ls = y.f_val;
+            motor->tmp.read_flag = 20;
+            break;
+        case RID_FLUX:
+            motor->tmp.Flux = y.f_val;
+            motor->tmp.read_flag = 21;
+            break;
+        case RID_GR:
+            motor->tmp.Gr = y.f_val;
+            motor->tmp.read_flag = 22;
+            break;
+        case RID_PMAX:
+            motor->tmp.PMAX = y.f_val;
+            motor->tmp.read_flag = 23;
+            break;
+        case RID_VMAX:
+            motor->tmp.VMAX = y.f_val;
+            motor->tmp.read_flag = 24;
+            break;
+        case RID_TMAX:
+            motor->tmp.TMAX = y.f_val;
+            motor->tmp.read_flag = 25;
+            break;
+        case RID_I_BW:
+            motor->tmp.I_BW = y.f_val;
+            motor->tmp.read_flag = 26;
+            break;
+        case RID_KP_ASR:
+            motor->tmp.KP_ASR = y.f_val;
+            motor->tmp.read_flag = 27;
+            break;
+        case RID_KI_ASR:
+            motor->tmp.KI_ASR = y.f_val;
+            motor->tmp.read_flag = 28;
+            break;
+        case RID_KP_APR:
+            motor->tmp.KP_APR = y.f_val;
+            motor->tmp.read_flag = 29;
+            break;
+        case RID_KI_APR:
+            motor->tmp.KI_APR = y.f_val;
+            motor->tmp.read_flag = 30;
+            break;
+        case RID_OV_VALUE:
+            motor->tmp.OV_Value = y.f_val;
+            motor->tmp.read_flag = 31;
+            break;
+        case RID_GREF:
+            motor->tmp.GREF = y.f_val;
+            motor->tmp.read_flag = 32;
+            break;
+        case RID_DETA:
+            motor->tmp.Deta = y.f_val;
+            motor->tmp.read_flag = 33;
+            break;
+        case RID_V_BW:
+            motor->tmp.V_BW = y.f_val;
+            motor->tmp.read_flag = 34;
+            break;
+        case RID_IQ_CL:
+            motor->tmp.IQ_cl = y.f_val;
+            motor->tmp.read_flag = 35;
+            break;
+        case RID_VL_CL:
+            motor->tmp.VL_cl = y.f_val;
+            motor->tmp.read_flag = 36;
+            break;
+        case RID_CAN_BR:
+            motor->tmp.can_br = y.u_val;
+            motor->tmp.read_flag = 37;
+            break;
+        case RID_SUB_VER:
+            motor->tmp.sub_ver = y.u_val;
+            motor->tmp.read_flag = 38;
+            break;
+        case RID_U_OFF:
+            motor->tmp.u_off = y.f_val;
+            motor->tmp.read_flag = 39;
+            break;
+        case RID_V_OFF:
+            motor->tmp.v_off = y.f_val;
+            motor->tmp.read_flag = 40;
+            break;
+        case RID_K1:
+            motor->tmp.k1 = y.f_val;
+            motor->tmp.read_flag = 41;
+            break;
+        case RID_K2:
+            motor->tmp.k2 = y.f_val;
+            motor->tmp.read_flag = 42;
+            break;
+        case RID_M_OFF:
+            motor->tmp.m_off = y.f_val;
+            motor->tmp.read_flag = 43;
+            break;
+        case RID_DIR:
+            motor->tmp.dir = y.f_val;
+            motor->tmp.read_flag = 44;
+            break;
+        case RID_P_M:
+            motor->tmp.p_m = y.f_val;
+            motor->tmp.read_flag = 45;
+            break;
+        case RID_X_OUT:
+            motor->tmp.x_out = y.f_val;
+            motor->tmp.read_flag = 0;
+            break;
+        }
+    }
 }
 
 /**
 ************************************************************************
-* @brief:      	fdcan1_rx_callback: CAN1??
+* @brief:      	fdcan1_rx_callback: CAN1ï¿½ï¿½ï¿½??ï¿½ï¿½ï¿½ï¿½ï¿½
 * @param:      	void
 * @retval:     	void
-* @details:    	CAN1?????ID????
-*               ?ID?0?dm4310_fbdataMotor??
+* @details:    	ï¿½ï¿½ï¿½ï¿½CAN1ï¿½ï¿½ï¿½ï¿½ï¿½???ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ï¿½IDï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½?ï¿½ï¿½ï¿½ï¿½?ï¿½?ï¿½ï¿½ï¿½ï¿½ï¿½
+*               ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½ID?0?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½dm4310_fbdataï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Motorï¿½?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½
 ************************************************************************
 **/
 void fdcan1_rx_callback(void)
 {
-	static uint16_t rec_id;
-	uint8_t rx_data[8] = {0};
-	fdcanx_receive(&hfdcan1, &rec_id, rx_data);
-	switch ((rx_data[0])&0x0F)
-	{
- 		case 0x00: dm_motor_fbdata(&motor[Motor3], rx_data); receive_motor_data(&motor[Motor3], rx_data); break;
-		case 0x01: dm_motor_fbdata(&motor[Motor4], rx_data); receive_motor_data(&motor[Motor4], rx_data); break;
-        case 0x02: dm_motor_fbdata(&motor[Motor3], rx_data); receive_motor_data(&motor[Motor3], rx_data); break;
-		case 0x03: dm_motor_fbdata(&motor[Motor4], rx_data); receive_motor_data(&motor[Motor4], rx_data); break;
-
-
-	}
+    uint16_t rec_id1;
+    uint8_t rx_data[8] = {0};
+    fdcanx_receive(&hfdcan1, &rec_id1, rx_data);
+    switch ((rx_data[0]) & 0x0F)
+    {
+    case 0x00:
+        dm_motor_fbdata(&R_motor[ROLL], rx_data);
+        receive_motor_data(&R_motor[ROLL], rx_data);
+        break;
+    case 0x01:
+        dm_motor_fbdata(&R_motor[PITCH], rx_data);
+        receive_motor_data(&R_motor[PITCH], rx_data);
+        break;
+    case 0x02:
+        dm_motor_fbdata(&R_motor[KNEE], rx_data);
+        receive_motor_data(&R_motor[KNEE], rx_data);
+        break;
+    case 0x03:
+        dm_motor_fbdata(&R_motor[WHEEL], rx_data);
+        receive_motor_data(&R_motor[WHEEL], rx_data);
+        break;
+    }
 }
 
 /**
 ************************************************************************
-* @brief:      	fdcan2_rx_callback: CAN2??
+* @brief:      	fdcan2_rx_callback: CAN2ï¿½ï¿½ï¿½??ï¿½ï¿½ï¿½ï¿½ï¿½
 * @param:      	void
 * @retval:     	void
-* @details:    	CAN2?????ID????
-*               ?ID?0?dm4310_fbdataMotor??
+* @details:    	ï¿½ï¿½ï¿½ï¿½CAN2ï¿½ï¿½ï¿½ï¿½ï¿½???ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ï¿½IDï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½?ï¿½ï¿½ï¿½ï¿½?ï¿½?ï¿½ï¿½ï¿½ï¿½ï¿½
+*               ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½ID?0?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½dm4310_fbdataï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Motorï¿½?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½
 ************************************************************************
 **/
 void fdcan2_rx_callback(void)
 {
-	uint16_t rec_id;
-	uint8_t rx_data[8] = {0};
-	fdcanx_receive(&hfdcan2, &rec_id, rx_data);
-	switch ((rx_data[0])&0x0F)
-	{
- 		case 0x00: dm_motor_fbdata(&motor[Motor1], rx_data); receive_motor_data(&motor[Motor1], rx_data); break;
- 		case 0x01: dm_motor_fbdata(&motor[Motor2], rx_data); receive_motor_data(&motor[Motor2], rx_data); break;
-	
-	}
+    uint16_t rec_id2;
+    uint8_t rx_data[8] = {0};
+    fdcanx_receive(&hfdcan2, &rec_id2, rx_data);
+    switch ((rx_data[0]) & 0x0F)
+    {
+    case 0x00:
+        dm_motor_fbdata(&L_motor[ROLL], rx_data);
+        receive_motor_data(&L_motor[ROLL], rx_data);
+        break;
+    case 0x01:
+        dm_motor_fbdata(&L_motor[PITCH], rx_data);
+        receive_motor_data(&L_motor[PITCH], rx_data);
+        break;
+    case 0x02:
+        dm_motor_fbdata(&L_motor[KNEE], rx_data);
+        receive_motor_data(&L_motor[KNEE], rx_data);
+        break;
+    case 0x03:
+        dm_motor_fbdata(&L_motor[WHEEL], rx_data);
+        receive_motor_data(&L_motor[WHEEL], rx_data);
+        break;
+    }
 }
-

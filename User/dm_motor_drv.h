@@ -16,14 +16,11 @@
 
 typedef enum
 {
-    Motor1 = 0X0U,
-    Motor2,
-    Motor3,
-    Motor4,
-    Motor5,
-    Motor6,
-    Motor7,
-    Motor8,
+
+    ROLL = 0,
+    PITCH,
+    KNEE,
+    WHEEL,
     num
 } motor_num;
 

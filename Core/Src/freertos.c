@@ -26,6 +26,8 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "BMI088driver.h"
+#include "bsp_fdcan.h"
+#include "dm_motor_ctrl.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -221,9 +223,26 @@ void T_Calculator(void *argument)
 void T_Motor_Control(void *argument)
 {
   /* USER CODE BEGIN T_Motor_Control */
+    osDelay(500);
+    bsp_fdcan_set_baud(&hfdcan1, CAN_CLASS, CAN_BR_1M);
+    bsp_fdcan_set_baud(&hfdcan2, CAN_CLASS, CAN_BR_1M);
+    bsp_can_init();
+    dm_motor_init();
+    osDelay(100);
     /* Infinite loop */
     for (;;)
     {
+        dm_motor_disable(&hfdcan2, &L_motor[ROLL]);
+        dm_motor_disable(&hfdcan1, &R_motor[ROLL]);
+        osDelay(1);
+        dm_motor_disable(&hfdcan2, &L_motor[PITCH]);
+        dm_motor_disable(&hfdcan1, &R_motor[PITCH]);
+        osDelay(1);
+        dm_motor_disable(&hfdcan2, &L_motor[KNEE]);
+        dm_motor_disable(&hfdcan1, &R_motor[KNEE]);
+        osDelay(1);
+        dm_motor_disable(&hfdcan2, &L_motor[WHEEL]);
+        dm_motor_disable(&hfdcan1, &R_motor[WHEEL]);
         osDelay(1);
     }
   /* USER CODE END T_Motor_Control */

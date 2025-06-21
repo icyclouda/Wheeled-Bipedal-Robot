@@ -10,7 +10,8 @@ extern uint32_t motor2_data_sent;
 extern uint32_t motor3_data_sent;
 extern uint32_t motor4_data_sent;
 
-extern motor_t motor[num];
+extern motor_t R_motor[num],L_motor[num];
+
 
 typedef union
 {
