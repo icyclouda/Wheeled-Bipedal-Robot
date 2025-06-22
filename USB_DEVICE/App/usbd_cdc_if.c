@@ -31,7 +31,9 @@
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
-
+// 非常不规范,应该用队列往应用层发的,但时间有点赶,后面有空再优化吧
+extern float Ctrl_Signal;
+int Ctrl_Count = 0;
 /* USER CODE END PV */
 
 /** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY
@@ -264,6 +266,12 @@ static int8_t CDC_Receive_HS(uint8_t *Buf, uint32_t *Len)
 {
     /* USER CODE BEGIN 11 */
     USBD_CDC_SetRxBuffer(&hUsbDeviceHS, &Buf[0]);
+    Ctrl_Signal = Buf[0];
+    Ctrl_Count++;
+    if (Ctrl_Count > 1000)
+    {
+        Ctrl_Count = 0;
+    }
     USBD_CDC_ReceivePacket(&hUsbDeviceHS);
     CDC_Transmit_HS(Buf, *Len);
     return (USBD_OK);

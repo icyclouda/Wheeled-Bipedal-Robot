@@ -14,6 +14,11 @@
                 "e:\\Robot\\Wheeled Bipedal Robot\\Wheeled Bipedal Robot\\Middlewares\\FreeRTOS_port\\ARM_CM7\\r0p1",
                 "e:\\Robot\\Wheeled Bipedal Robot\\Wheeled Bipedal Robot\\Middlewares\\Third_Party\\FreeRTOS\\Source\\portable\\GCC\\ARM_CM4F",
                 "e:\\Robot\\Wheeled Bipedal Robot\\Wheeled Bipedal Robot\\User\\BMI088\\inc",
+                "e:\\Robot\\Wheeled Bipedal Robot\\Wheeled Bipedal Robot\\USB_DEVICE\\App",
+                "e:\\Robot\\Wheeled Bipedal Robot\\Wheeled Bipedal Robot\\USB_DEVICE\\Target",
+                "e:\\Robot\\Wheeled Bipedal Robot\\Wheeled Bipedal Robot\\Middlewares\\ST\\STM32_USB_Device_Library\\Core\\Inc",
+                "e:\\Robot\\Wheeled Bipedal Robot\\Wheeled Bipedal Robot\\Middlewares\\ST\\STM32_USB_Device_Library\\Class\\CDC\\Inc",
+                "e:\\Robot\\Wheeled Bipedal Robot\\Wheeled Bipedal Robot\\User\\vofa+",
                 "D:\\keil\\ARM\\ARMCLANG\\include",
                 "D:\\keil\\ARM\\ARMCLANG\\include\\arm_linux",
                 "D:\\keil\\ARM\\ARMCLANG\\include\\arm_linux_compat",
@@ -24,7 +29,9 @@
                 "e:\\Robot\\Wheeled Bipedal Robot\\Wheeled Bipedal Robot\\Drivers\\STM32H7xx_HAL_Driver\\Src",
                 "e:\\Robot\\Wheeled Bipedal Robot\\Wheeled Bipedal Robot\\Middlewares\\Third_Party\\FreeRTOS\\Source",
                 "e:\\Robot\\Wheeled Bipedal Robot\\Wheeled Bipedal Robot\\Middlewares\\Third_Party\\FreeRTOS\\Source\\portable\\MemMang",
-                "e:\\Robot\\Wheeled Bipedal Robot\\Wheeled Bipedal Robot\\Middlewares\\Third_Party\\FreeRTOS\\Source\\portable\\RVDS\\ARM_CM4F"
+                "e:\\Robot\\Wheeled Bipedal Robot\\Wheeled Bipedal Robot\\Middlewares\\Third_Party\\FreeRTOS\\Source\\portable\\RVDS\\ARM_CM4F",
+                "e:\\Robot\\Wheeled Bipedal Robot\\Wheeled Bipedal Robot\\Middlewares\\ST\\STM32_USB_Device_Library\\Core\\Src",
+                "e:\\Robot\\Wheeled Bipedal Robot\\Wheeled Bipedal Robot\\Middlewares\\ST\\STM32_USB_Device_Library\\Class\\CDC\\Src"
             ],
             "defines": [
                 "USE_HAL_DRIVER",

@@ -22,7 +22,7 @@ void dm_motor_init(void)
     memset(&L_motor[PITCH], 0, sizeof(L_motor[PITCH]));
     memset(&L_motor[KNEE], 0, sizeof(L_motor[KNEE]));
     memset(&L_motor[WHEEL], 0, sizeof(L_motor[WHEEL]));
-    
+
     memset(&R_motor[ROLL], 0, sizeof(R_motor[ROLL]));
     memset(&R_motor[PITCH], 0, sizeof(R_motor[PITCH]));
     memset(&R_motor[KNEE], 0, sizeof(R_motor[KNEE]));
