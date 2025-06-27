@@ -16,13 +16,12 @@
 
 typedef enum
 {
-
-    ROLL = 0,
-    PITCH,
-    KNEE,
-    WHEEL,
-    num
-} motor_num;
+    E_ROLL = 0,
+    E_PITCH,
+    E_KNEE,
+    E_WHEEL,
+    E_JOINT_NUM
+} Joint_Num;
 
 typedef enum
 {
@@ -34,51 +33,51 @@ typedef enum
 
 typedef enum
 {
-    RID_UV_VALUE = 0,  // ��ѹ����ֵ
-    RID_KT_VALUE = 1,  // Ť��ϵ��
-    RID_OT_VALUE = 2,  // ���±���ֵ
-    RID_OC_VALUE = 3,  // ��������ֵ
-    RID_ACC = 4,       // ���ٶ�
-    RID_DEC = 5,       // ���ٶ�
-    RID_MAX_SPD = 6,   // ����ٶ�
-    RID_MST_ID = 7,    // ����ID
-    RID_ESC_ID = 8,    // ����ID
-    RID_TIMEOUT = 9,   // ��ʱ����ʱ��
-    RID_CMODE = 10,    // ����ģʽ
-    RID_DAMP = 11,     // ���ճ��ϵ��
-    RID_INERTIA = 12,  // ���ת������
-    RID_HW_VER = 13,   // ����
-    RID_SW_VER = 14,   // �����汾��
-    RID_SN = 15,       // ����
-    RID_NPP = 16,      // ���������
-    RID_RS = 17,       // ����
-    RID_LS = 18,       // ���
-    RID_FLUX = 19,     // ����
-    RID_GR = 20,       // ���ּ��ٱ�
-    RID_PMAX = 21,     // λ��ӳ�䷶Χ
-    RID_VMAX = 22,     // �ٶ�ӳ�䷶Χ
-    RID_TMAX = 23,     // Ť��ӳ�䷶Χ
-    RID_I_BW = 24,     // ���������ƴ���
-    RID_KP_ASR = 25,   // �ٶȻ�Kp
-    RID_KI_ASR = 26,   // �ٶȻ�Ki
-    RID_KP_APR = 27,   // λ�û�Kp
-    RID_KI_APR = 28,   // λ�û�Ki
-    RID_OV_VALUE = 29, // ��ѹ����ֵ
-    RID_GREF = 30,     // ��������Ч��
-    RID_DETA = 31,     // �ٶȻ�����ϵ��
-    RID_V_BW = 32,     // �ٶȻ��˲�����
-    RID_IQ_CL = 33,    // ��������ǿϵ��
-    RID_VL_CL = 34,    // �ٶȻ���ǿϵ��
-    RID_CAN_BR = 35,   // CAN�����ʴ���
-    RID_SUB_VER = 36,  // �Ӱ汾��
-    RID_U_OFF = 50,    // u��ƫ��
-    RID_V_OFF = 51,    // v��ƫ��
-    RID_K1 = 52,       // ��������1
-    RID_K2 = 53,       // ��������2
-    RID_M_OFF = 54,    // �Ƕ�ƫ��
-    RID_DIR = 55,      // ����
-    RID_P_M = 80,      // ���λ��
-    RID_X_OUT = 81     // �����λ��
+    RID_UV_VALUE = 0,  // 低压保护值
+    RID_KT_VALUE = 1,  // 扭矩系数
+    RID_OT_VALUE = 2,  // 过温保护值
+    RID_OC_VALUE = 3,  // 过流保护值
+    RID_ACC = 4,       // 加速度
+    RID_DEC = 5,       // 减速度
+    RID_MAX_SPD = 6,   // 最大速度
+    RID_MST_ID = 7,    // 反馈ID
+    RID_ESC_ID = 8,    // 接收ID
+    RID_TIMEOUT = 9,   // 超时警报时
+    RID_CMODE = 10,    // 控制模式
+    RID_DAMP = 11,     // 电机粘滞系
+    RID_INERTIA = 12,  // 电机转动惯
+    RID_HW_VER = 13,   // 保留
+    RID_SW_VER = 14,   // 软件版本号
+    RID_SN = 15,       // 保留
+    RID_NPP = 16,      // 电机极对数
+    RID_RS = 17,       // 电阻
+    RID_LS = 18,       // 电感
+    RID_FLUX = 19,     // 磁链
+    RID_GR = 20,       // 齿轮减速比
+    RID_PMAX = 21,     // 位置映射范
+    RID_VMAX = 22,     // 速度映射范
+    RID_TMAX = 23,     // 扭矩映射范
+    RID_I_BW = 24,     // 电流环控制
+    RID_KP_ASR = 25,   // 速度环Kp
+    RID_KI_ASR = 26,   // 速度环Ki
+    RID_KP_APR = 27,   // 位置环Kp
+    RID_KI_APR = 28,   // 位置环Ki
+    RID_OV_VALUE = 29, // 过压保护值
+    RID_GREF = 30,     // 齿轮力矩效
+    RID_DETA = 31,     // 速度环阻尼
+    RID_V_BW = 32,     // 速度环滤波
+    RID_IQ_CL = 33,    // 电流环增强
+    RID_VL_CL = 34,    // 速度环增强
+    RID_CAN_BR = 35,   // CAN波特率
+    RID_SUB_VER = 36,  // 子版本号
+    RID_U_OFF = 50,    // u相偏置
+    RID_V_OFF = 51,    // v相偏置
+    RID_K1 = 52,       // 补偿因子1
+    RID_K2 = 53,       // 补偿因子2
+    RID_M_OFF = 54,    // 角度偏移
+    RID_DIR = 55,      // 方向
+    RID_P_M = 80,      // 电机位置
+    RID_X_OUT = 81     // 输出轴位置
 } rid_e;
 
 // �������
@@ -88,51 +87,51 @@ typedef struct
     uint8_t write_flag;
     uint8_t save_flag;
 
-    float UV_Value;   // ��ѹ����ֵ
-    float KT_Value;   // Ť��ϵ��
-    float OT_Value;   // ���±���ֵ
-    float OC_Value;   // ��������ֵ
-    float ACC;        // ���ٶ�
-    float DEC;        // ���ٶ�
-    float MAX_SPD;    // ����ٶ�
-    uint32_t MST_ID;  // ����ID
-    uint32_t ESC_ID;  // ����ID
-    uint32_t TIMEOUT; // ��ʱ����ʱ��
-    uint32_t cmode;   // ����ģʽ
-    float Damp;       // ���ճ��ϵ��
-    float Inertia;    // ���ת������
-    uint32_t hw_ver;  // ����
-    uint32_t sw_ver;  // �����汾��
-    uint32_t SN;      // ����
-    uint32_t NPP;     // ���������
-    float Rs;         // ����
-    float Ls;         // ���
-    float Flux;       // ����
-    float Gr;         // ���ּ��ٱ�
-    float PMAX;       // λ��ӳ�䷶Χ
-    float VMAX;       // �ٶ�ӳ�䷶Χ
-    float TMAX;       // Ť��ӳ�䷶Χ
-    float I_BW;       // ���������ƴ���
-    float KP_ASR;     // �ٶȻ�Kp
-    float KI_ASR;     // �ٶȻ�Ki
-    float KP_APR;     // λ�û�Kp
-    float KI_APR;     // λ�û�Ki
-    float OV_Value;   // ��ѹ����ֵ
-    float GREF;       // ��������Ч��
-    float Deta;       // �ٶȻ�����ϵ��
-    float V_BW;       // �ٶȻ��˲�����
-    float IQ_cl;      // ��������ǿϵ��
-    float VL_cl;      // �ٶȻ���ǿϵ��
-    uint32_t can_br;  // CAN�����ʴ���
-    uint32_t sub_ver; // �Ӱ汾��
-    float u_off;      // u��ƫ��
-    float v_off;      // v��ƫ��
-    float k1;         // ��������1
-    float k2;         // ��������2
-    float m_off;      // �Ƕ�ƫ��
-    float dir;        // ����
-    float p_m;        // ���λ��
-    float x_out;      // �����λ��
+    float UV_Value;   // 低压保护值
+    float KT_Value;   // 扭矩系数
+    float OT_Value;   // 过温保护值
+    float OC_Value;   // 过流保护值
+    float ACC;        // 加速度
+    float DEC;        // 减速度
+    float MAX_SPD;    // 最大速度
+    uint32_t MST_ID;  // 反馈ID
+    uint32_t ESC_ID;  // 接收ID
+    uint32_t TIMEOUT; // 超时警报时
+    uint32_t cmode;   // 控制模式
+    float Damp;       // 电机粘滞系
+    float Inertia;    // 电机转动惯
+    uint32_t hw_ver;  // 保留
+    uint32_t sw_ver;  // 软件版本号
+    uint32_t SN;      // 保留
+    uint32_t NPP;     // 电机极对数
+    float Rs;         // 电阻
+    float Ls;         // 电感
+    float Flux;       // 磁链
+    float Gr;         // 齿轮减速比
+    float PMAX;       // 位置映射范
+    float VMAX;       // 速度映射范
+    float TMAX;       // 扭矩映射范
+    float I_BW;       // 电流环控制
+    float KP_ASR;     // 速度环Kp
+    float KI_ASR;     // 速度环Ki
+    float KP_APR;     // 位置环Kp
+    float KI_APR;     // 位置环Ki
+    float OV_Value;   // 过压保护值
+    float GREF;       // 齿轮力矩效
+    float Deta;       // 速度环阻尼
+    float V_BW;       // 速度环滤波
+    float IQ_cl;      // 电流环增强
+    float VL_cl;      // 速度环增强
+    uint32_t can_br;  // CAN波特率代
+    uint32_t sub_ver; // 子版本号
+    float u_off;      // u相偏置
+    float v_off;      // v相偏置
+    float k1;         // 补偿因子1
+    float k2;         // 补偿因子2
+    float m_off;      // 角度偏移
+    float dir;        // 方向
+    float p_m;        // 电机位置
+    float x_out;      // 输出轴位置
 } esc_inf_t;
 
 // ����ش���Ϣ�ṹ��
@@ -168,6 +167,7 @@ typedef struct
 
 typedef struct
 {
+    hcan_t *hdcan;
     uint16_t id;
     uint16_t mst_id;
     motor_fbpara_t para;
@@ -187,7 +187,7 @@ void dm_motor_fbdata(motor_t *motor, uint8_t *rx_data);
 void enable_motor_mode(hcan_t *hcan, uint16_t motor_id, uint16_t mode_id);
 void disable_motor_mode(hcan_t *hcan, uint16_t motor_id, uint16_t mode_id);
 
-void mit_ctrl(hcan_t *hcan, motor_t *motor, uint16_t motor_id, float pos, float vel, float kp, float kd, float tor);
+void mit_ctrl(motor_t *motor, float pos, float vel, float tor);
 void pos_ctrl(hcan_t *hcan, uint16_t motor_id, float pos, float vel);
 void spd_ctrl(hcan_t *hcan, uint16_t motor_id, float vel);
 void psi_ctrl(hcan_t *hcan, uint16_t motor_id, float pos, float vel, float cur);
@@ -199,5 +199,7 @@ void read_motor_data(uint16_t id, uint8_t rid);
 void read_motor_ctrl_fbdata(uint16_t id);
 void write_motor_data(uint16_t id, uint8_t rid, uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3);
 void save_motor_data(uint16_t id, uint8_t rid);
+extern motor_t L_motor[E_JOINT_NUM];
+extern motor_t R_motor[E_JOINT_NUM];
 
 #endif /* __DM_MOTOR_DRV_H__ */

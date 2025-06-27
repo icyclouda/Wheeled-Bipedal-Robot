@@ -3,8 +3,8 @@
 #include "string.h"
 #include "stdbool.h"
 
-motor_t L_motor[num];
-motor_t R_motor[num];
+motor_t L_motor[E_JOINT_NUM];
+motor_t R_motor[E_JOINT_NUM];
 
 /**
 ************************************************************************
@@ -18,127 +18,152 @@ motor_t R_motor[num];
 void dm_motor_init(void)
 {
     // ��?��Motor1��Motor2�?���?
-    memset(&L_motor[ROLL], 0, sizeof(L_motor[ROLL]));
-    memset(&L_motor[PITCH], 0, sizeof(L_motor[PITCH]));
-    memset(&L_motor[KNEE], 0, sizeof(L_motor[KNEE]));
-    memset(&L_motor[WHEEL], 0, sizeof(L_motor[WHEEL]));
 
-    memset(&R_motor[ROLL], 0, sizeof(R_motor[ROLL]));
-    memset(&R_motor[PITCH], 0, sizeof(R_motor[PITCH]));
-    memset(&R_motor[KNEE], 0, sizeof(R_motor[KNEE]));
-    memset(&R_motor[WHEEL], 0, sizeof(R_motor[WHEEL]));
+    // PID
 
-    L_motor[ROLL].id = 0x00;
-    L_motor[ROLL].mst_id = 0x00;
-    L_motor[ROLL].tmp.read_flag = 1;
-    L_motor[ROLL].ctrl.mode = mit_mode;
-    L_motor[ROLL].ctrl.vel_set = 0.0f;
-    L_motor[ROLL].ctrl.pos_set = 0.0f;
-    L_motor[ROLL].ctrl.tor_set = 0.0f;
-    L_motor[ROLL].ctrl.cur_set = 0.02f;
-    L_motor[ROLL].ctrl.kp_set = 0.0f;
-    L_motor[ROLL].ctrl.kd_set = 0.0f;
-    L_motor[ROLL].tmp.PMAX = 12.5f;
-    L_motor[ROLL].tmp.VMAX = 30.0f;
-    L_motor[ROLL].tmp.TMAX = 10.0f;
+    memset(&L_motor[E_ROLL], 0, sizeof(L_motor[E_ROLL]));
+    memset(&L_motor[E_PITCH], 0, sizeof(L_motor[E_PITCH]));
+    memset(&L_motor[E_KNEE], 0, sizeof(L_motor[E_KNEE]));
+    memset(&L_motor[E_WHEEL], 0, sizeof(L_motor[E_WHEEL]));
 
-    R_motor[ROLL].id = 0x00;
-    R_motor[ROLL].mst_id = 0x00; // ?��������?�?����?R���
-    R_motor[ROLL].tmp.read_flag = 1;
-    R_motor[ROLL].ctrl.mode = mit_mode;
-    R_motor[ROLL].ctrl.vel_set = 0.0f;
-    R_motor[ROLL].ctrl.pos_set = 0.0f;
-    R_motor[ROLL].ctrl.tor_set = 0.0f;
-    R_motor[ROLL].ctrl.cur_set = 0.02f;
-    R_motor[ROLL].ctrl.kp_set = 0.0f;
-    R_motor[ROLL].ctrl.kd_set = 0.0f;
-    R_motor[ROLL].tmp.PMAX = 12.5f;
-    R_motor[ROLL].tmp.VMAX = 30.0f;
-    R_motor[ROLL].tmp.TMAX = 10.0f;
+    memset(&R_motor[E_ROLL], 0, sizeof(R_motor[E_ROLL]));
+    memset(&R_motor[E_PITCH], 0, sizeof(R_motor[E_PITCH]));
+    memset(&R_motor[E_KNEE], 0, sizeof(R_motor[E_KNEE]));
+    memset(&R_motor[E_WHEEL], 0, sizeof(R_motor[E_WHEEL]));
+    dm_motor_clear_para(R_motor);
+    dm_motor_clear_para(L_motor);
+    L_motor[E_ROLL].ctrl.kp_set = 30.0f;
+    L_motor[E_ROLL].ctrl.kd_set = 0.0f;
+    L_motor[E_PITCH].ctrl.kp_set = 30.0f;
+    L_motor[E_PITCH].ctrl.kd_set = 0.0f;
+    L_motor[E_KNEE].ctrl.kp_set = 30.0f;
+    L_motor[E_KNEE].ctrl.kd_set = 0.0f;
 
-    L_motor[PITCH].id = 0x01;
-    L_motor[PITCH].mst_id = 0x00; // ?��������?�?����?L_motor
-    L_motor[PITCH].tmp.read_flag = 1;
-    L_motor[PITCH].ctrl.mode = mit_mode;
-    L_motor[PITCH].ctrl.vel_set = 0.0f;
-    L_motor[PITCH].ctrl.pos_set = 0.0f;
-    L_motor[PITCH].ctrl.tor_set = 0.0f;
-    L_motor[PITCH].ctrl.cur_set = 0.02f;
-    L_motor[PITCH].ctrl.kp_set = 0.0f;
-    L_motor[PITCH].ctrl.kd_set = 0.0f;
-    L_motor[PITCH].tmp.PMAX = 12.5f;
-    L_motor[PITCH].tmp.VMAX = 30.0f;
-    L_motor[PITCH].tmp.TMAX = 10.0f;
+    R_motor[E_ROLL].ctrl.kp_set = 30.0f;
+    R_motor[E_ROLL].ctrl.kd_set = 0.0f;
+    R_motor[E_PITCH].ctrl.kp_set = 30.0f;
+    R_motor[E_PITCH].ctrl.kd_set = 0.0f;
+    R_motor[E_KNEE].ctrl.kp_set = 30.0f;
+    R_motor[E_KNEE].ctrl.kd_set = 0.0f;
 
-    R_motor[PITCH].id = 0x01;
-    R_motor[PITCH].mst_id = 0x00; // ?��������?�?����?R_motor
-    R_motor[PITCH].tmp.read_flag = 1;
-    R_motor[PITCH].ctrl.mode = mit_mode;
-    R_motor[PITCH].ctrl.vel_set = 0.0f;
-    R_motor[PITCH].ctrl.pos_set = 0.0f;
-    R_motor[PITCH].ctrl.tor_set = 0.0f;
-    R_motor[PITCH].ctrl.cur_set = 0.02f;
-    R_motor[PITCH].ctrl.kp_set = 0.0f;
-    R_motor[PITCH].ctrl.kd_set = 0.0f;
-    R_motor[PITCH].tmp.PMAX = 12.5f;
-    R_motor[PITCH].tmp.VMAX = 30.0f;
-    R_motor[PITCH].tmp.TMAX = 10.0f;
+    L_motor[E_ROLL].ctrl.kp_set = 0;
+    L_motor[E_ROLL].ctrl.kd_set = 0;
+    L_motor[E_PITCH].ctrl.kp_set = 0;
+    L_motor[E_PITCH].ctrl.kd_set = 0;
+    L_motor[E_KNEE].ctrl.kp_set = 0;
+    L_motor[E_KNEE].ctrl.kd_set = 0;
+    R_motor[E_ROLL].ctrl.kp_set = 0;
+    R_motor[E_ROLL].ctrl.kd_set = 0;
+    R_motor[E_PITCH].ctrl.kp_set = 0;
+    R_motor[E_PITCH].ctrl.kd_set = 0;
+    R_motor[E_KNEE].ctrl.kp_set = 0;
+    R_motor[E_KNEE].ctrl.kd_set = 0;
 
-    L_motor[KNEE].id = 0x02;
-    L_motor[KNEE].mst_id = 0x00; // ?��������?�?����?����
-    L_motor[KNEE].tmp.read_flag = 1;
-    L_motor[KNEE].ctrl.mode = mit_mode;
-    L_motor[KNEE].ctrl.vel_set = 0.0f;
-    L_motor[KNEE].ctrl.pos_set = 0.0f;
-    L_motor[KNEE].ctrl.tor_set = 0.0f;
-    L_motor[KNEE].ctrl.cur_set = 0.02f;
-    L_motor[KNEE].ctrl.kp_set = 0.0f;
-    L_motor[KNEE].ctrl.kd_set = 0.0f;
-    L_motor[KNEE].tmp.PMAX = 12.5f;
-    L_motor[KNEE].tmp.VMAX = 30.0f;
-    L_motor[KNEE].tmp.TMAX = 10.0f;
+    L_motor[E_ROLL].hdcan = &hfdcan2;
+    L_motor[E_PITCH].hdcan = &hfdcan2;
+    L_motor[E_KNEE].hdcan = &hfdcan2;
+    L_motor[E_WHEEL].hdcan = &hfdcan2;
 
-    R_motor[KNEE].id = 0x02;
-    R_motor[KNEE].mst_id = 0x00; // ?��������?�?����?R���
-    R_motor[KNEE].tmp.read_flag = 1;
-    R_motor[KNEE].ctrl.mode = mit_mode;
-    R_motor[KNEE].ctrl.vel_set = 0.0f;
-    R_motor[KNEE].ctrl.pos_set = 0.0f;
-    R_motor[KNEE].ctrl.tor_set = 0.0f;
-    R_motor[KNEE].ctrl.cur_set = 0.02f;
-    R_motor[KNEE].ctrl.kp_set = 0.0f;
-    R_motor[KNEE].ctrl.kd_set = 0.0f;
-    R_motor[KNEE].tmp.PMAX = 12.5f;
-    R_motor[KNEE].tmp.VMAX = 30.0f;
-    R_motor[KNEE].tmp.TMAX = 10.0f;
+    R_motor[E_ROLL].hdcan = &hfdcan1;
+    R_motor[E_PITCH].hdcan = &hfdcan1;
+    R_motor[E_KNEE].hdcan = &hfdcan1;
+    R_motor[E_WHEEL].hdcan = &hfdcan1;
 
-    L_motor[WHEEL].id = 0x03;
-    L_motor[WHEEL].mst_id = 0x00; // ?��������?�?����?L_motor
-    L_motor[WHEEL].tmp.read_flag = 1;
-    L_motor[WHEEL].ctrl.mode = mit_mode;
-    L_motor[WHEEL].ctrl.vel_set = 0.0f;
-    L_motor[WHEEL].ctrl.pos_set = 0.0f;
-    L_motor[WHEEL].ctrl.tor_set = 0.0f;
-    L_motor[WHEEL].ctrl.cur_set = 0.02f;
-    L_motor[WHEEL].ctrl.kp_set = 0.0f;
-    L_motor[WHEEL].ctrl.kd_set = 0.0f;
-    L_motor[WHEEL].tmp.PMAX = 12.5f;
-    L_motor[WHEEL].tmp.VMAX = 30.0f;
-    L_motor[WHEEL].tmp.TMAX = 10.0f;
+    L_motor[E_ROLL].id = 0x05;
+    L_motor[E_ROLL].mst_id = 0x00;
+    L_motor[E_ROLL].tmp.read_flag = 1;
+    L_motor[E_ROLL].ctrl.mode = mit_mode;
+    L_motor[E_ROLL].ctrl.vel_set = 0;
+    L_motor[E_ROLL].ctrl.pos_set = 0;
+    L_motor[E_ROLL].ctrl.tor_set = 0;
+    L_motor[E_ROLL].ctrl.cur_set = 0;
+    L_motor[E_ROLL].tmp.PMAX = 12.5f;
+    L_motor[E_ROLL].tmp.VMAX = 30.0f;
+    L_motor[E_ROLL].tmp.TMAX = 10.0f;
 
-    R_motor[WHEEL].id = 0x03;
-    R_motor[WHEEL].mst_id = 0x00; // ?��������?�?����?R_motor
-    R_motor[WHEEL].tmp.read_flag = 1;
-    R_motor[WHEEL].ctrl.mode = mit_mode;
-    R_motor[WHEEL].ctrl.vel_set = 0.0f;
-    R_motor[WHEEL].ctrl.pos_set = 0.0f;
-    R_motor[WHEEL].ctrl.tor_set = 0.0f;
-    R_motor[WHEEL].ctrl.cur_set = 0.02f;
-    R_motor[WHEEL].ctrl.kp_set = 0.0f;
-    R_motor[WHEEL].ctrl.kd_set = 0.0f;
-    R_motor[WHEEL].tmp.PMAX = 12.5f;
-    R_motor[WHEEL].tmp.VMAX = 30.0f;
-    R_motor[WHEEL].tmp.TMAX = 10.0f;
+    R_motor[E_ROLL].id = 0x05;
+    R_motor[E_ROLL].mst_id = 0x00; // ?��������?�?����?R���
+    R_motor[E_ROLL].tmp.read_flag = 1;
+    R_motor[E_ROLL].ctrl.mode = mit_mode;
+    R_motor[E_ROLL].ctrl.vel_set = 0.0f;
+    R_motor[E_ROLL].ctrl.pos_set = 0.0f;
+    R_motor[E_ROLL].ctrl.tor_set = 0.0f;
+    R_motor[E_ROLL].ctrl.cur_set = 0;
+    R_motor[E_ROLL].tmp.PMAX = 12.5f;
+    R_motor[E_ROLL].tmp.VMAX = 30.0f;
+    R_motor[E_ROLL].tmp.TMAX = 10.0f;
+
+    L_motor[E_PITCH].id = 0x01;
+    L_motor[E_PITCH].mst_id = 0x00; // ?��������?�?����?L_motor
+    L_motor[E_PITCH].tmp.read_flag = 1;
+    L_motor[E_PITCH].ctrl.mode = mit_mode;
+    L_motor[E_PITCH].ctrl.vel_set = 0.0f;
+    L_motor[E_PITCH].ctrl.pos_set = 0.0f;
+    L_motor[E_PITCH].ctrl.tor_set = 0.0f;
+    L_motor[E_PITCH].ctrl.cur_set = 0;
+    L_motor[E_PITCH].tmp.PMAX = 12.5f;
+    L_motor[E_PITCH].tmp.VMAX = 30.0f;
+    L_motor[E_PITCH].tmp.TMAX = 10.0f;
+
+    R_motor[E_PITCH].id = 0x01;
+    R_motor[E_PITCH].mst_id = 0x00; // ?��������?�?����?R_motor
+    R_motor[E_PITCH].tmp.read_flag = 1;
+    R_motor[E_PITCH].ctrl.mode = mit_mode;
+    R_motor[E_PITCH].ctrl.vel_set = 0.0f;
+    R_motor[E_PITCH].ctrl.pos_set = 0.0f;
+    R_motor[E_PITCH].ctrl.tor_set = 0.0f;
+    R_motor[E_PITCH].ctrl.cur_set = 0;
+    R_motor[E_PITCH].tmp.PMAX = 12.5f;
+    R_motor[E_PITCH].tmp.VMAX = 30.0f;
+    R_motor[E_PITCH].tmp.TMAX = 10.0f;
+
+    L_motor[E_KNEE].id = 0x02;
+    L_motor[E_KNEE].mst_id = 0x00; // ?��������?�?����?����
+    L_motor[E_KNEE].tmp.read_flag = 1;
+    L_motor[E_KNEE].ctrl.mode = mit_mode;
+    L_motor[E_KNEE].ctrl.vel_set = 0.0f;
+    L_motor[E_KNEE].ctrl.pos_set = 0.0f;
+    L_motor[E_KNEE].ctrl.tor_set = 0.0f;
+    L_motor[E_KNEE].ctrl.cur_set = 0;
+    L_motor[E_KNEE].tmp.PMAX = 12.5f;
+    L_motor[E_KNEE].tmp.VMAX = 30.0f;
+    L_motor[E_KNEE].tmp.TMAX = 10.0f;
+
+    R_motor[E_KNEE].id = 0x02;
+    R_motor[E_KNEE].mst_id = 0x00; // ?��������?�?����?R���
+    R_motor[E_KNEE].tmp.read_flag = 1;
+    R_motor[E_KNEE].ctrl.mode = mit_mode;
+    R_motor[E_KNEE].ctrl.vel_set = 0.0f;
+    R_motor[E_KNEE].ctrl.pos_set = 0.0f;
+    R_motor[E_KNEE].ctrl.tor_set = 0.0f;
+    R_motor[E_KNEE].ctrl.cur_set = 0;
+    R_motor[E_KNEE].tmp.PMAX = 12.5f;
+    R_motor[E_KNEE].tmp.VMAX = 30.0f;
+    R_motor[E_KNEE].tmp.TMAX = 10.0f;
+
+    L_motor[E_WHEEL].id = 0x03;
+    L_motor[E_WHEEL].mst_id = 0x00; // ?��������?�?����?L_motor
+    L_motor[E_WHEEL].tmp.read_flag = 1;
+    L_motor[E_WHEEL].ctrl.mode = mit_mode;
+    L_motor[E_WHEEL].ctrl.vel_set = 0.0f;
+    L_motor[E_WHEEL].ctrl.pos_set = 0.0f;
+    L_motor[E_WHEEL].ctrl.tor_set = 0.0f;
+    L_motor[E_WHEEL].ctrl.cur_set = 0;
+    L_motor[E_WHEEL].tmp.PMAX = 12.5f;
+    L_motor[E_WHEEL].tmp.VMAX = 30.0f;
+    L_motor[E_WHEEL].tmp.TMAX = 10.0f;
+
+    R_motor[E_WHEEL].id = 0x03;
+    R_motor[E_WHEEL].mst_id = 0x00; // ?��������?�?����?R_motor
+    R_motor[E_WHEEL].tmp.read_flag = 1;
+    R_motor[E_WHEEL].ctrl.mode = mit_mode;
+    R_motor[E_WHEEL].ctrl.vel_set = 0.0f;
+    R_motor[E_WHEEL].ctrl.pos_set = 0.0f;
+    R_motor[E_WHEEL].ctrl.tor_set = 0.0f;
+    R_motor[E_WHEEL].ctrl.cur_set = 0;
+    R_motor[E_WHEEL].tmp.PMAX = 12.5f;
+    R_motor[E_WHEEL].tmp.VMAX = 30.0f;
+    R_motor[E_WHEEL].tmp.TMAX = 10.0f;
 }
 /**
 ************************************************************************
@@ -515,21 +540,21 @@ void fdcan1_rx_callback(void)
     fdcanx_receive(&hfdcan1, &rec_id1, rx_data);
     switch ((rx_data[0]) & 0x0F)
     {
-    case 0x00:
-        dm_motor_fbdata(&R_motor[ROLL], rx_data);
-        receive_motor_data(&R_motor[ROLL], rx_data);
+    case 0x05:
+        dm_motor_fbdata(&R_motor[E_ROLL], rx_data);
+        receive_motor_data(&R_motor[E_ROLL], rx_data);
         break;
     case 0x01:
-        dm_motor_fbdata(&R_motor[PITCH], rx_data);
-        receive_motor_data(&R_motor[PITCH], rx_data);
+        dm_motor_fbdata(&R_motor[E_PITCH], rx_data);
+        receive_motor_data(&R_motor[E_PITCH], rx_data);
         break;
     case 0x02:
-        dm_motor_fbdata(&R_motor[KNEE], rx_data);
-        receive_motor_data(&R_motor[KNEE], rx_data);
+        dm_motor_fbdata(&R_motor[E_KNEE], rx_data);
+        receive_motor_data(&R_motor[E_KNEE], rx_data);
         break;
     case 0x03:
-        dm_motor_fbdata(&R_motor[WHEEL], rx_data);
-        receive_motor_data(&R_motor[WHEEL], rx_data);
+        dm_motor_fbdata(&R_motor[E_WHEEL], rx_data);
+        receive_motor_data(&R_motor[E_WHEEL], rx_data);
         break;
     }
 }
@@ -550,21 +575,21 @@ void fdcan2_rx_callback(void)
     fdcanx_receive(&hfdcan2, &rec_id2, rx_data);
     switch ((rx_data[0]) & 0x0F)
     {
-    case 0x00:
-        dm_motor_fbdata(&L_motor[ROLL], rx_data);
-        receive_motor_data(&L_motor[ROLL], rx_data);
+    case 0x05:
+        dm_motor_fbdata(&L_motor[E_ROLL], rx_data);
+        receive_motor_data(&L_motor[E_ROLL], rx_data);
         break;
     case 0x01:
-        dm_motor_fbdata(&L_motor[PITCH], rx_data);
-        receive_motor_data(&L_motor[PITCH], rx_data);
+        dm_motor_fbdata(&L_motor[E_PITCH], rx_data);
+        receive_motor_data(&L_motor[E_PITCH], rx_data);
         break;
     case 0x02:
-        dm_motor_fbdata(&L_motor[KNEE], rx_data);
-        receive_motor_data(&L_motor[KNEE], rx_data);
+        dm_motor_fbdata(&L_motor[E_KNEE], rx_data);
+        receive_motor_data(&L_motor[E_KNEE], rx_data);
         break;
     case 0x03:
-        dm_motor_fbdata(&L_motor[WHEEL], rx_data);
-        receive_motor_data(&L_motor[WHEEL], rx_data);
+        dm_motor_fbdata(&L_motor[E_WHEEL], rx_data);
+        receive_motor_data(&L_motor[E_WHEEL], rx_data);
         break;
     }
 }
