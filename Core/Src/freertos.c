@@ -1,8 +1,16 @@
 /*
  * @Author: IcyClouda 2330329778@qq.com
+ * @Date: 2025-06-28 05:19:17
+ * @LastEditors: IcyClouda 2330329778@qq.com
+ * @LastEditTime: 2025-06-28 20:53:34
+ * @FilePath: \Wheeled Bipedal Robot\Core\Src\freertos.c
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
+/*
+ * @Author: IcyClouda 2330329778@qq.com
  * @Date: 2025-06-21 02:07:45
  * @LastEditors: IcyClouda 2330329778@qq.com
- * @LastEditTime: 2025-06-28 01:48:50
+ * @LastEditTime: 2025-06-28 07:18:12
  * @FilePath: \Wheeled Bipedal Robot\Core\Src\freertos.c
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -44,7 +52,7 @@
 typedef StaticTask_t osStaticThreadDef_t;
 typedef StaticQueue_t osStaticMessageQDef_t;
 #define USE_Reinforce_Learning 0
-#define Debug_NUM 10
+
 /* USER CODE BEGIN PTD */
 
 /* USER CODE END PTD */
@@ -143,7 +151,7 @@ float Ctrl_Signal = 0;
 extern int Ctrl_Count;
 int Lost_Count = 0;
 
-float DebugData[Debug_NUM] = {0}; // debug
+float DebugData[DEBUG_NUM] = {0}; // debug
 
 Sys_Dat ROBOT;
 /* USER CODE END Variables */
@@ -345,16 +353,30 @@ void T_Calculator(void *argument)
     {
         if (USE_Reinforce_Learning)
         {
+            ROBOT.Left_Motor_Position_Output.MotorRoll = received_data.data[0];
+            ROBOT.Left_Motor_Position_Output.MotorPitch = received_data.data[1];
+            ROBOT.Left_Motor_Position_Output.MotorKnee = received_data.data[2];
+            ROBOT.Left_Motor_Position_Output.MotorWheel = received_data.data[3];
+
+            ROBOT.Right_Motor_Position_Output.MotorRoll = received_data.data[4];
+            ROBOT.Right_Motor_Position_Output.MotorPitch = received_data.data[5];
+            ROBOT.Right_Motor_Position_Output.MotorKnee = received_data.data[6];
+            ROBOT.Right_Motor_Position_Output.MotorWheel = received_data.data[7];
         }
         else
         {
             if (ROBOT.Status == Established)
             {
-                PID_INPUT_V(&PID_PITCH, 0, ROBOT.IMU088.pose[0]);
+                temp_target_left_posi[E_ROLL] = 0;
+                temp_target_left_posi[E_PITCH] = 0.677;
+                temp_target_left_posi[E_KNEE] = -1.27;
+                temp_target_right_posi[E_ROLL] = 0;
+                temp_target_right_posi[E_PITCH] = 0.677;
+                temp_target_right_posi[E_KNEE] = -1.27;
+                PID_INPUT_V(&PID_PITCH, 0.149, ROBOT.IMU088.pose[P_ROLL]);
                 PID_CAL(&PID_PITCH);
-
-                ROBOT.Left_Motor_Torque_Output.MotorWheel = -PID_PITCH.output;
-                ROBOT.Right_Motor_Torque_Output.MotorWheel = -PID_PITCH.output;
+                ROBOT.Left_Motor_Torque_Output.MotorWheel = PID_PITCH.output;
+                ROBOT.Right_Motor_Torque_Output.MotorWheel = PID_PITCH.output;
 
                 ROBOT.Left_Motor_Position_Output.MotorRoll = temp_target_left_posi[E_ROLL] * JointRoll;
                 ROBOT.Left_Motor_Position_Output.MotorPitch = temp_target_left_posi[E_PITCH] * JointPitch;
@@ -379,8 +401,8 @@ void T_Calculator(void *argument)
             DebugData[0] = ROBOT.Left_Motor_Torque_Output.MotorWheel;
             DebugData[1] = ROBOT.Right_Motor_Torque_Output.MotorWheel;
             DebugData[2] = L_motor->para.tor;
-            DebugData[3] = L_motor->para.tor;
-            DebugData[4] = ROBOT.IMU088.pose[0];
+            DebugData[3] = R_motor->para.tor;
+            DebugData[4] = ROBOT.IMU088.pose[P_ROLL];
         }
         vTaskDelay(1);
     }
@@ -544,8 +566,8 @@ void T_Sensor(void *argument)
         ROBOT.Motor_Speed_Right.MotorKnee = R_motor[E_KNEE].para.vel / -JointKnee;
         ROBOT.Motor_Speed_Right.MotorWheel = R_motor[E_WHEEL].para.vel / -JointWheel;
         // vofa_demo();
-
-        for (int i = 0; i < Debug_NUM; i++)
+        DebugData[5] = ROBOT.Left_Motor_Torque_Output.MotorWheel;
+        for (int i = 0; i < DEBUG_NUM; i++)
             vofa_send_data(i, DebugData[i]);
         vofa_sendframetail();
         vTaskDelay(1);
@@ -560,6 +582,7 @@ void T_Sensor(void *argument)
  * @retval None
  */
 /* USER CODE END Header_T_Commu */
+
 int flag = 0;
 void T_Commu(void *argument)
 {
@@ -576,16 +599,10 @@ void T_Commu(void *argument)
         }
         else
         {
-            // 1. 可以在此处理数据（示例：设置一些安全标志）
             uint8_t emergency_stop = (received_data.key_state == 0x7F);
-
-            // 2. 创建回传结构体（可以修改或直接回传原数据）
             USB_DataPacket response_data = received_data;
 
-            // 3. 可选：修改部分数据作为确认
-            response_data.flag1 |= 0x80; // 设置最高位作为回传标志
-
-            // 4. 发送回传数据
+            response_data.flag1 |= 0x80;
             uint8_t result;
             do
             {
@@ -597,13 +614,12 @@ void T_Commu(void *argument)
                 }
             } while (result == USBD_BUSY);
 
-            // 5. 重置接收标志
             Lost_Count = 0;
         }
-        // if (Lost_Count > 100)
-        //     ROBOT.Status = 0;
-        // else
-        ROBOT.Status = flag;
+        if (Lost_Count > 100)
+            ROBOT.Status = 0;
+        else
+            ROBOT.Status = flag;
 
         lastCount = Ctrl_Count;
         vTaskDelay(5);
@@ -663,3 +679,4 @@ void PID_SET_M(PID_Para *pid, float _PID_P_MAX, float _PID_I_MAX, float _PID_D_M
     pid->PID_INTG_MAX = _PID_INTG_MAX;
 }
 /* USER CODE END Application */
+//

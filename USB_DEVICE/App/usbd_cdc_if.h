@@ -57,7 +57,7 @@ extern "C"
     typedef struct
     {
         uint8_t key_state; // 1字节按键状态
-        float data[4];     // 4个float
+        float data[8];     // 4个float
         uint8_t flag1;     // 1字节标志位
     } USB_DataPacket;
 #pragma pack(pop)

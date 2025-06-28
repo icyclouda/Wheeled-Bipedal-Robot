@@ -6,6 +6,10 @@
         "exoskeleton_robot.h": "c",
         "portable.h": "c",
         "main.h": "c",
-        "usbd_cdc_if.h": "c"
+        "usbd_cdc_if.h": "c",
+        "vofa.h": "c",
+        "bmi088reg.h": "c",
+        "bmi088middleware.h": "c",
+        "bmi088driver.h": "c"
     }
 }

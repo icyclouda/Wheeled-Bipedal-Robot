@@ -57,7 +57,13 @@ typedef struct BMI088_RAW_DATA
     int16_t temp;
     int16_t gyro[3];
 } __attribute__((packed)) bmi088_raw_data_t;
-
+typedef enum
+{
+    P_ROLL = 0,
+    P_PITCH,
+    P_YAW,
+    IMU_NUM
+} IMU_alt;
 typedef struct BMI088_REAL_DATA
 {
     uint8_t status;
@@ -93,6 +99,6 @@ extern uint8_t BMI088_init(void);
 extern uint8_t bmi088_accel_init(void);
 extern uint8_t bmi088_gyro_init(void);
 
-extern void BMI088_read(float gyro[3], float accel[3], float *temperate, float pose[3], float dt);
+extern void BMI088_read(float gyro[IMU_NUM], float accel[IMU_NUM], float *temperate, float pose[IMU_NUM], float dt);
 
 #endif

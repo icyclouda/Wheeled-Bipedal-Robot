@@ -2,8 +2,10 @@
 #include "BMI088reg.h"
 #include "BMI088Middleware.h"
 #include "math.h"
+#include "vofa.h"
 float BMI088_ACCEL_SEN = BMI088_ACCEL_3G_SEN;
 float BMI088_GYRO_SEN = BMI088_GYRO_2000_SEN;
+float M_PI = 3.1415926;
 
 #if defined(BMI088_USE_SPI)
 /**
@@ -102,7 +104,8 @@ float BMI088_GYRO_SEN = BMI088_GYRO_2000_SEN;
         BMI088_GYRO_NS_H();                         \
     }
 
-static void BMI088_write_single_reg(uint8_t reg, uint8_t data);
+static void
+BMI088_write_single_reg(uint8_t reg, uint8_t data);
 static void BMI088_read_single_reg(uint8_t reg, uint8_t *return_data);
 // static void BMI088_write_muli_reg(uint8_t reg, uint8_t* buf, uint8_t len );
 static void BMI088_read_muli_reg(uint8_t reg, uint8_t *buf, uint8_t len);
@@ -280,56 +283,112 @@ uint8_t bmi088_gyro_init(void)
 * @details:    	读取BMI088传感器数据，包括加速度、陀螺仪和温度
 ************************************************************************
 **/
-void BMI088_read(float gyro[3], float accel[3], float *temperate, float pose[3], float dt)
+float m = 1;
+void BMI088_read(float gyro[IMU_NUM], float accel[IMU_NUM], float *temperate, float pose[IMU_NUM], float dt)
 {
     uint8_t buf[8] = {0, 0, 0, 0, 0, 0};
     int16_t bmi088_raw_temp;
     static float roll, pitch, yaw;
+    static int first_run = 1;
+
+    // 互补滤波参数
+    float alpha = 1;                // hubu权重
+    const float gyro_threshold = 0.02f; // 陀螺仪死区阈值
 
     // 读取加速度计数据
     BMI088_accel_read_muli_reg(BMI088_ACCEL_XOUT_L, buf, 6);
 
     bmi088_raw_temp = (int16_t)((buf[1]) << 8) | buf[0];
-    accel[0] = bmi088_raw_temp * BMI088_ACCEL_SEN;
+    accel[P_ROLL] = bmi088_raw_temp * BMI088_ACCEL_SEN;
     bmi088_raw_temp = (int16_t)((buf[3]) << 8) | buf[2];
-    accel[1] = bmi088_raw_temp * BMI088_ACCEL_SEN;
+    accel[P_PITCH] = bmi088_raw_temp * BMI088_ACCEL_SEN;
     bmi088_raw_temp = (int16_t)((buf[5]) << 8) | buf[4];
-    accel[2] = bmi088_raw_temp * BMI088_ACCEL_SEN;
+    accel[P_YAW] = bmi088_raw_temp * BMI088_ACCEL_SEN;
+
+    // 加速度计数据归一化
+    float accel_norm = sqrt(accel[P_ROLL] * accel[P_ROLL] + accel[P_PITCH] * accel[P_PITCH] + accel[P_YAW] * accel[P_YAW]);
+    if (accel_norm > 0.001f)
+    { // 避免除以零
+        accel[P_ROLL] /= accel_norm;
+        accel[P_PITCH] /= accel_norm;
+        accel[P_YAW] /= accel_norm;
+    }
 
     // 使用加速度计计算初始横滚角和俯仰角（单位：弧度）
-    roll = atan2(accel[1], accel[2]);
-    pitch = atan(-accel[0] / sqrt(accel[1] * accel[1] + accel[2] * accel[2]));
+    float accel_roll = atan2(accel[P_PITCH], accel[P_YAW]);
+    float accel_pitch = atan(-accel[P_ROLL] / sqrt(accel[P_PITCH] * accel[P_PITCH] + accel[P_YAW] * accel[P_YAW]));
+
     // 读取陀螺仪数据
     BMI088_gyro_read_muli_reg(BMI088_GYRO_CHIP_ID, buf, 8);
     if (buf[0] == BMI088_GYRO_CHIP_ID_VALUE)
     {
         bmi088_raw_temp = (int16_t)((buf[3]) << 8) | buf[2];
-        gyro[0] = bmi088_raw_temp * BMI088_GYRO_SEN;
+        gyro[P_ROLL] = bmi088_raw_temp * BMI088_GYRO_SEN;
         bmi088_raw_temp = (int16_t)((buf[5]) << 8) | buf[4];
-        gyro[1] = bmi088_raw_temp * BMI088_GYRO_SEN;
+        gyro[P_PITCH] = bmi088_raw_temp * BMI088_GYRO_SEN;
         bmi088_raw_temp = (int16_t)((buf[7]) << 8) | buf[6];
-        gyro[2] = bmi088_raw_temp * BMI088_GYRO_SEN;
+        gyro[P_YAW] = bmi088_raw_temp * BMI088_GYRO_SEN;
 
-        // 用陀螺仪积分计算偏航角（简单积分）
-        if (gyro[2] > 0.02f || gyro[2] < -0.02f)
+        // 初始化处理（第一次运行时）
+        if (first_run)
         {
-            yaw += gyro[2] * dt;
+            roll = accel_roll;
+            pitch = accel_pitch;
+            yaw = 0;
+            first_run = 0;
         }
+
+        // 互补滤波实现
+        // 横滚角和俯仰角：融合陀螺仪积分和加速度计测量值
+        if (accel_norm > m)
+            alpha = 1;
+        else
+            alpha = 0;
+
+        roll = alpha * (roll + gyro[P_ROLL] * dt) + (1 - alpha) * accel_roll;
+        // DebugData[4] = pitch;
+        pitch = alpha * (pitch + gyro[P_PITCH] * dt) + (1 - alpha) * accel_pitch;
+
+        // DebugData[1] = alpha;
+        // DebugData[2] = accel_pitch;
+        // DebugData[3] = accel_norm;
+
+        // 偏航角：仅使用陀螺仪积分（无磁力计校正）
+        if (fabs(gyro[P_YAW]) > gyro_threshold)
+        {
+            yaw += gyro[P_YAW] * dt;
+        }
+
+        // 角度归一化到[-π, π]范围
+        if (roll > M_PI)
+            roll -= 2 * M_PI;
+        else if (roll < -M_PI)
+            roll += 2 * M_PI;
+
+        if (pitch > M_PI)
+            pitch -= 2 * M_PI;
+        else if (pitch < -M_PI)
+            pitch += 2 * M_PI;
+
+        if (yaw > M_PI)
+            yaw -= 2 * M_PI;
+        else if (yaw < -M_PI)
+            yaw += 2 * M_PI;
     }
 
-    // 读取温度数据
-    BMI088_accel_read_muli_reg(BMI088_TEMP_M, buf, 2);
-    bmi088_raw_temp = (int16_t)((buf[0] << 3) | (buf[1] >> 5));
-    if (bmi088_raw_temp > 1023)
-    {
-        bmi088_raw_temp -= 2048;
-    }
-    *temperate = bmi088_raw_temp * BMI088_TEMP_FACTOR + BMI088_TEMP_OFFSET;
+    // // 读取温度数据
+    // BMI088_accel_read_muli_reg(BMI088_TEMP_M, buf, 2);
+    // bmi088_raw_temp = (int16_t)((buf[0] << 3) | (buf[1] >> 5));
+    // if (bmi088_raw_temp > 1023)
+    // {
+    //     bmi088_raw_temp -= 2048;
+    // }
+    // *temperate = bmi088_raw_temp * BMI088_TEMP_FACTOR + BMI088_TEMP_OFFSET;
 
     // 将计算出的位姿信息存入pose数组（单位：弧度）
-    pose[0] = roll;  // 横滚角（绕X轴）
-    pose[1] = pitch; // 俯仰角（绕Y轴）
-    pose[2] = yaw;   // 偏航角（绕Z轴）
+    pose[P_ROLL] = roll;  // 横滚角（绕X轴）
+    pose[P_PITCH] = pitch; // 俯仰角（绕Y轴）
+    pose[P_YAW] = yaw;   // 偏航角（绕Z轴）
 }
 #if defined(BMI088_USE_SPI)
 /**

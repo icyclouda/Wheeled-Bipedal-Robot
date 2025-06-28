@@ -34,30 +34,30 @@ void dm_motor_init(void)
     dm_motor_clear_para(L_motor);
     L_motor[E_ROLL].ctrl.kp_set = 30.0f;
     L_motor[E_ROLL].ctrl.kd_set = 0.0f;
-    L_motor[E_PITCH].ctrl.kp_set = 30.0f;
+    L_motor[E_PITCH].ctrl.kp_set = 5.0f;
     L_motor[E_PITCH].ctrl.kd_set = 0.0f;
-    L_motor[E_KNEE].ctrl.kp_set = 30.0f;
+    L_motor[E_KNEE].ctrl.kp_set = 10.0f;
     L_motor[E_KNEE].ctrl.kd_set = 0.0f;
 
     R_motor[E_ROLL].ctrl.kp_set = 30.0f;
     R_motor[E_ROLL].ctrl.kd_set = 0.0f;
-    R_motor[E_PITCH].ctrl.kp_set = 30.0f;
+    R_motor[E_PITCH].ctrl.kp_set = 5.0f;
     R_motor[E_PITCH].ctrl.kd_set = 0.0f;
-    R_motor[E_KNEE].ctrl.kp_set = 30.0f;
+    R_motor[E_KNEE].ctrl.kp_set = 10.0f;
     R_motor[E_KNEE].ctrl.kd_set = 0.0f;
 
-    L_motor[E_ROLL].ctrl.kp_set = 0;
-    L_motor[E_ROLL].ctrl.kd_set = 0;
-    L_motor[E_PITCH].ctrl.kp_set = 0;
-    L_motor[E_PITCH].ctrl.kd_set = 0;
-    L_motor[E_KNEE].ctrl.kp_set = 0;
-    L_motor[E_KNEE].ctrl.kd_set = 0;
-    R_motor[E_ROLL].ctrl.kp_set = 0;
-    R_motor[E_ROLL].ctrl.kd_set = 0;
-    R_motor[E_PITCH].ctrl.kp_set = 0;
-    R_motor[E_PITCH].ctrl.kd_set = 0;
-    R_motor[E_KNEE].ctrl.kp_set = 0;
-    R_motor[E_KNEE].ctrl.kd_set = 0;
+    // L_motor[E_ROLL].ctrl.kp_set = 0;
+    // L_motor[E_ROLL].ctrl.kd_set = 0;
+    // L_motor[E_PITCH].ctrl.kp_set = 0;
+    // L_motor[E_PITCH].ctrl.kd_set = 0;
+    // L_motor[E_KNEE].ctrl.kp_set = 0;
+    // L_motor[E_KNEE].ctrl.kd_set = 0;
+    // R_motor[E_ROLL].ctrl.kp_set = 0;
+    // R_motor[E_ROLL].ctrl.kd_set = 0;
+    // R_motor[E_PITCH].ctrl.kp_set = 0;
+    // R_motor[E_PITCH].ctrl.kd_set = 0;
+    // R_motor[E_KNEE].ctrl.kp_set = 0;
+    // R_motor[E_KNEE].ctrl.kd_set = 0;
 
     L_motor[E_ROLL].hdcan = &hfdcan2;
     L_motor[E_PITCH].hdcan = &hfdcan2;
