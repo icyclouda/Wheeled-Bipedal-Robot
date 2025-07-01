@@ -2,7 +2,7 @@
  * @Author: IcyClouda 2330329778@qq.com
  * @Date: 2025-06-28 05:19:17
  * @LastEditors: IcyClouda 2330329778@qq.com
- * @LastEditTime: 2025-06-28 20:53:34
+ * @LastEditTime: 2025-07-02 00:06:49
  * @FilePath: \Wheeled Bipedal Robot\Core\Src\freertos.c
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -51,7 +51,7 @@
 /* Private typedef -----------------------------------------------------------*/
 typedef StaticTask_t osStaticThreadDef_t;
 typedef StaticQueue_t osStaticMessageQDef_t;
-#define USE_Reinforce_Learning 0
+#define USE_Reinforce_Learning 1
 
 /* USER CODE BEGIN PTD */
 
@@ -146,11 +146,13 @@ void PID_SET_P(PID_Para *pid, float KP, float KI, float KD);
 void PID_INPUT_V(PID_Para *pid, float TARGET, float DAT);
 void PID_SET_M(PID_Para *pid, float _PID_P_MAX, float _PID_I_MAX, float _PID_D_MAX, float _max_output, float _PID_INTG_MAX);
 PID_Para PID_PITCH, PID_SPEED;
+float a, b, c;
+float speed = 0;
+USB_TX_DataPacket Tx_data;
 // float pitch_target = 0;
 float Ctrl_Signal = 0;
 extern int Ctrl_Count;
 int Lost_Count = 0;
-
 float DebugData[DEBUG_NUM] = {0}; // debug
 
 Sys_Dat ROBOT;
@@ -346,38 +348,44 @@ void T_Calculator(void *argument)
     /* USER CODE BEGIN T_Calculator */
     TickType_t lasttick = xTaskGetTickCount();
     volatile int ta = 1924;
-    PID_SET_P(&PID_PITCH, 0, 0, 0);
-    PID_SET_M(&PID_PITCH, 4, 1, 1, 5, 0.5);
+    PID_SET_P(&PID_SPEED, -0, 0, 0);
+    PID_SET_M(&PID_SPEED, 1.5, 0.1, 0, 1.5, 0.1);
+    PID_SET_P(&PID_PITCH, 2.5, 0, 0);
+    PID_SET_M(&PID_PITCH, 10, 0, 5, 5, 0);
+
     /* Infinite loop */
     for (;;)
     {
         if (USE_Reinforce_Learning)
         {
-            ROBOT.Left_Motor_Position_Output.MotorRoll = received_data.data[0];
-            ROBOT.Left_Motor_Position_Output.MotorPitch = received_data.data[1];
-            ROBOT.Left_Motor_Position_Output.MotorKnee = received_data.data[2];
-            ROBOT.Left_Motor_Position_Output.MotorWheel = received_data.data[3];
-
-            ROBOT.Right_Motor_Position_Output.MotorRoll = received_data.data[4];
-            ROBOT.Right_Motor_Position_Output.MotorPitch = received_data.data[5];
-            ROBOT.Right_Motor_Position_Output.MotorKnee = received_data.data[6];
-            ROBOT.Right_Motor_Position_Output.MotorWheel = received_data.data[7];
+            ROBOT.Left_Motor_Position_Output.MotorRoll  = POLE_ROLL_L *RX_data.Re_tau[0];
+            ROBOT.Left_Motor_Position_Output.MotorPitch = POLE_PITCH_L*RX_data.Re_tau[1];
+            ROBOT.Left_Motor_Position_Output.MotorKnee  = POLE_KNEE_L *RX_data.Re_tau[2];
+            ROBOT.Left_Motor_Position_Output.MotorWheel = POLE_WHEEL_L*RX_data.Re_tau[3];
+            ROBOT.Right_Motor_Position_Output.MotorRoll = POLE_ROLL_R *RX_data.Re_tau[4];
+            ROBOT.Right_Motor_Position_Output.MotorPitch= POLE_PITCH_R*RX_data.Re_tau[5];
+            ROBOT.Right_Motor_Position_Output.MotorKnee = POLE_KNEE_R *RX_data.Re_tau[6];
+            ROBOT.Right_Motor_Position_Output.MotorWheel= POLE_WHEEL_R*RX_data.Re_tau[7];
         }
         else
         {
             if (ROBOT.Status == Established)
             {
-                temp_target_left_posi[E_ROLL] = 0;
-                temp_target_left_posi[E_PITCH] = 0.677;
-                temp_target_left_posi[E_KNEE] = -1.27;
-                temp_target_right_posi[E_ROLL] = 0;
-                temp_target_right_posi[E_PITCH] = 0.677;
-                temp_target_right_posi[E_KNEE] = -1.27;
-                PID_INPUT_V(&PID_PITCH, 0.149, ROBOT.IMU088.pose[P_ROLL]);
-                PID_CAL(&PID_PITCH);
-                ROBOT.Left_Motor_Torque_Output.MotorWheel = PID_PITCH.output;
-                ROBOT.Right_Motor_Torque_Output.MotorWheel = PID_PITCH.output;
+                temp_target_left_posi[E_ROLL] = 0.4 + c;
+                temp_target_left_posi[E_PITCH] = 1.6 + a;
+                temp_target_left_posi[E_KNEE] = -2.4 + b;
+                temp_target_right_posi[E_ROLL] = 0.1 + c;
+                temp_target_right_posi[E_PITCH] = 1.6 + a;
+                temp_target_right_posi[E_KNEE] = -2.4 + b;
 
+                PID_INPUT_V(&PID_SPEED, speed, ROBOT.Motor_Speed_Left.MotorWheel + ROBOT.Motor_Speed_Right.MotorWheel);
+                PID_CAL(&PID_SPEED);
+                PID_INPUT_V(&PID_PITCH, PID_SPEED.output, ROBOT.IMU088.pose[P_ROLL]);
+                PID_CAL(&PID_PITCH);
+                ROBOT.Left_Motor_Torque_Output.MotorWheel = -PID_PITCH.output;
+                ROBOT.Right_Motor_Torque_Output.MotorWheel = -PID_PITCH.output;
+                // ROBOT.Left_Motor_Torque_Output.MotorWheel = -PID_SPEED.output;
+                // ROBOT.Right_Motor_Torque_Output.MotorWheel = -PID_SPEED.output;
                 ROBOT.Left_Motor_Position_Output.MotorRoll = temp_target_left_posi[E_ROLL] * JointRoll;
                 ROBOT.Left_Motor_Position_Output.MotorPitch = temp_target_left_posi[E_PITCH] * JointPitch;
                 ROBOT.Left_Motor_Position_Output.MotorKnee = temp_target_left_posi[E_KNEE] * JointKnee;
@@ -398,11 +406,11 @@ void T_Calculator(void *argument)
                 ROBOT.Left_Motor_Torque_Output.MotorWheel = 0;
                 ROBOT.Right_Motor_Torque_Output.MotorWheel = 0;
             }
-            DebugData[0] = ROBOT.Left_Motor_Torque_Output.MotorWheel;
-            DebugData[1] = ROBOT.Right_Motor_Torque_Output.MotorWheel;
-            DebugData[2] = L_motor->para.tor;
-            DebugData[3] = R_motor->para.tor;
-            DebugData[4] = ROBOT.IMU088.pose[P_ROLL];
+            DebugData[0] = PID_PITCH.dat;
+            DebugData[1] = PID_PITCH.PID_P;
+            DebugData[2] = PID_PITCH.PID_D;
+            DebugData[4] = PID_PITCH.output;
+            DebugData[5] = ROBOT.IMU088.pose[P_ROLL];
         }
         vTaskDelay(1);
     }
@@ -538,6 +546,7 @@ void T_Sensor(void *argument)
     /* USER CODE BEGIN T_Sensor */
     /* Infinite loop */
     vTaskDelay(500);
+
     while (BMI088_init())
     {
         ;
@@ -567,9 +576,9 @@ void T_Sensor(void *argument)
         ROBOT.Motor_Speed_Right.MotorWheel = R_motor[E_WHEEL].para.vel / -JointWheel;
         // vofa_demo();
         DebugData[5] = ROBOT.Left_Motor_Torque_Output.MotorWheel;
-        for (int i = 0; i < DEBUG_NUM; i++)
-            vofa_send_data(i, DebugData[i]);
-        vofa_sendframetail();
+        // for (int i = 0; i < DEBUG_NUM; i++)
+        //     vofa_send_data(i, DebugData[i]);
+        // vofa_sendframetail();
         vTaskDelay(1);
     }
     /* USER CODE END T_Sensor */
@@ -588,10 +597,38 @@ void T_Commu(void *argument)
 {
     /* USER CODE BEGIN T_Commu */
     static int lastCount = 0;
+    uint8_t result;
+    Tx_data.Head = 0x11;
+    Tx_data.Tail = 0x99;
     /* Infinite loop */
     for (;;)
     {
+        Tx_data.euler[0] = ROBOT.IMU088.pose[P_ROLL];
+        Tx_data.euler[1] = ROBOT.IMU088.pose[P_PITCH];
+        Tx_data.euler[2] = ROBOT.IMU088.pose[P_YAW];
+        Tx_data.ang_vel[0] = ROBOT.IMU088.gyro[P_ROLL];
+        Tx_data.ang_vel[1] = ROBOT.IMU088.gyro[P_PITCH];
+        Tx_data.ang_vel[2] = ROBOT.IMU088.gyro[P_YAW];
 
+        Tx_data.dof_pos[0] = POLE_ROLL_L * ROBOT.Motor_Posi_Left.MotorRoll;
+        Tx_data.dof_pos[1] = POLE_PITCH_L * ROBOT.Motor_Posi_Left.MotorPitch;
+        Tx_data.dof_pos[2] = POLE_KNEE_L * ROBOT.Motor_Posi_Left.MotorKnee;
+        Tx_data.dof_pos[3] = POLE_WHEEL_L * ROBOT.Motor_Posi_Left.MotorWheel;
+        Tx_data.dof_pos[4] = POLE_ROLL_R * ROBOT.Motor_Posi_Right.MotorRoll;
+        Tx_data.dof_pos[5] = POLE_PITCH_R * ROBOT.Motor_Posi_Right.MotorPitch;
+        Tx_data.dof_pos[6] = POLE_KNEE_R * ROBOT.Motor_Posi_Right.MotorKnee;
+        Tx_data.dof_pos[7] = POLE_WHEEL_R * ROBOT.Motor_Posi_Right.MotorWheel;
+        Tx_data.dof_vel[0] = POLE_ROLL_L * ROBOT.Motor_Speed_Left.MotorRoll;
+        Tx_data.dof_vel[1] = POLE_PITCH_L * ROBOT.Motor_Speed_Left.MotorPitch;
+        Tx_data.dof_vel[2] = POLE_KNEE_L * ROBOT.Motor_Speed_Left.MotorKnee;
+        Tx_data.dof_vel[3] = POLE_WHEEL_L * ROBOT.Motor_Speed_Left.MotorWheel;
+        Tx_data.dof_vel[4] = POLE_ROLL_R * ROBOT.Motor_Speed_Right.MotorRoll;
+        Tx_data.dof_vel[5] = POLE_PITCH_R * ROBOT.Motor_Speed_Right.MotorPitch;
+        Tx_data.dof_vel[6] = POLE_KNEE_R * ROBOT.Motor_Speed_Right.MotorKnee;
+        Tx_data.dof_vel[7] = POLE_WHEEL_R * ROBOT.Motor_Speed_Right.MotorWheel;
+
+        CDC_Transmit_HS((uint8_t *)&Tx_data,
+                        sizeof(Tx_data));
         if (Ctrl_Count == lastCount)
         {
             if (Lost_Count++ > 150)
@@ -599,15 +636,10 @@ void T_Commu(void *argument)
         }
         else
         {
-            uint8_t emergency_stop = (received_data.key_state == 0x7F);
-            USB_DataPacket response_data = received_data;
-
-            response_data.flag1 |= 0x80;
-            uint8_t result;
             do
             {
-                result = CDC_Transmit_HS((uint8_t *)&response_data,
-                                         sizeof(response_data));
+                result = CDC_Transmit_HS((uint8_t *)&Tx_data,
+                                         sizeof(Tx_data));
                 if (result == USBD_BUSY)
                 {
                     vTaskDelay(1); // 短暂延时后重试
@@ -616,10 +648,10 @@ void T_Commu(void *argument)
 
             Lost_Count = 0;
         }
-        if (Lost_Count > 100)
-            ROBOT.Status = 0;
-        else
-            ROBOT.Status = flag;
+        // if (Lost_Count > 100)
+        //     ROBOT.Status = 0;
+        // else
+        ROBOT.Status = flag;
 
         lastCount = Ctrl_Count;
         vTaskDelay(5);

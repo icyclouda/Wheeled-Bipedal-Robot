@@ -52,17 +52,31 @@ extern "C"
 /* Define size for the receive and transmit buffer over CDC */
 #define APP_RX_DATA_SIZE 2048
 #define APP_TX_DATA_SIZE 2048
+#define FRAME_HEAD 0X11
+#define FRAME_TAIL 0x99
 /* USER CODE BEGIN EXPORTED_DEFINES */
 #pragma pack(push, 1)
     typedef struct
     {
-        uint8_t key_state; // 1字节按键状态
-        float data[8];     // 4个float
-        uint8_t flag1;     // 1字节标志位
-    } USB_DataPacket;
+        uint8_t Head;
+        float ang_vel[3];
+        float euler[3]; // 欧拉角(roll, pitch, yaw)
+        float dof_pos[8];
+        float dof_vel[8];
+        uint8_t Tail;
+    } USB_TX_DataPacket;
 #pragma pack(pop)
 
-    extern USB_DataPacket received_data;
+#pragma pack(push, 1)
+    typedef struct
+    {
+        uint8_t Head;
+        float Re_tau[8];
+        uint8_t Tail;
+    } USB_RX_DataPacket;
+#pragma pack(pop)
+
+    extern USB_RX_DataPacket RX_data;
     /* USER CODE END EXPORTED_DEFINES */
 
     /**

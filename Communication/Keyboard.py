@@ -360,7 +360,6 @@ class KeyboardGUI:
                     if available > 0:
                         data = self.ser.read(available)
                         buffer.extend(data)
-                        
                         # 处理缓冲区中所有完整的数据包
                         while len(buffer) >= PACKET_SIZE:
                             # 提取一个完整数据包
@@ -402,7 +401,6 @@ def main():
     except ValueError as e:
         print(e)
         return
-    
     print("开始监听WASD按键，启动GUI界面...")
     
     # 启动GUI

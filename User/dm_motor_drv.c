@@ -56,7 +56,6 @@ void dm_motor_disable(hcan_t *hcan, motor_t *motor)
         // 	disable_motor_mode(hcan, motor->id, PSI_MODE);
         // 	break;
     }
-    
 }
 /**
 ************************************************************************
@@ -68,24 +67,24 @@ void dm_motor_disable(hcan_t *hcan, motor_t *motor)
 *               支持的控制模式包括位置模式、位置速度控制模式和速度控制模式
 ************************************************************************
 **/
-//void dm_motor_ctrl_send(hcan_t *hcan, motor_t *motor)
+// void dm_motor_ctrl_send(hcan_t *hcan, motor_t *motor)
 //{
-//    switch (motor->ctrl.mode)
-//    {
-//    case mit_mode:
-//        mit_ctrl(hcan, motor, motor->id, motor->ctrl.pos_set, motor->ctrl.vel_set, motor->ctrl.kp_set, motor->ctrl.kd_set, motor->ctrl.tor_set);
-//        break;
-//    case pos_mode:
-//        pos_ctrl(hcan, motor->id, motor->ctrl.pos_set, motor->ctrl.vel_set);
-//        break;
-//    case spd_mode:
-//        spd_ctrl(hcan, motor->id, motor->ctrl.vel_set);
-//        break;
-//    case psi_mode:
-//        psi_ctrl(hcan, motor->id, motor->ctrl.pos_set, motor->ctrl.vel_set, motor->ctrl.cur_set);
-//        break;
-//    }
-//}
+//     switch (motor->ctrl.mode)
+//     {
+//     case mit_mode:
+//         mit_ctrl(hcan, motor, motor->id, motor->ctrl.pos_set, motor->ctrl.vel_set, motor->ctrl.kp_set, motor->ctrl.kd_set, motor->ctrl.tor_set);
+//         break;
+//     case pos_mode:
+//         pos_ctrl(hcan, motor->id, motor->ctrl.pos_set, motor->ctrl.vel_set);
+//         break;
+//     case spd_mode:
+//         spd_ctrl(hcan, motor->id, motor->ctrl.vel_set);
+//         break;
+//     case psi_mode:
+//         psi_ctrl(hcan, motor->id, motor->ctrl.pos_set, motor->ctrl.vel_set, motor->ctrl.cur_set);
+//         break;
+//     }
+// }
 
 /**
 ************************************************************************

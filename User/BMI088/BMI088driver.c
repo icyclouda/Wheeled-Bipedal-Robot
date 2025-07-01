@@ -6,7 +6,15 @@
 float BMI088_ACCEL_SEN = BMI088_ACCEL_3G_SEN;
 float BMI088_GYRO_SEN = BMI088_GYRO_2000_SEN;
 float M_PI = 3.1415926;
+float fc = 10;
 
+float omega;
+float b0;
+float b2;
+float b1;
+float a1;
+float a2;
+float m = 10;
 #if defined(BMI088_USE_SPI)
 /**
 ************************************************************************
@@ -167,6 +175,12 @@ uint8_t BMI088_init(void)
     error |= bmi088_accel_init();
     error |= bmi088_gyro_init();
 
+    omega = tanf(M_PI * fc / 1000);
+    b0 = (omega * omega) / (1 + 1.414 * omega + omega * omega);
+    b2 = b0;
+    b1 = 2 * b0;
+    a1 = 2 * (omega * omega - 1) / (1 + 1.414 * omega + omega * omega);
+    a2 = (1 - 1.414 * omega + omega * omega) / (1 + 1.414 * omega + omega * omega);
     return error;
 }
 /**
@@ -283,7 +297,7 @@ uint8_t bmi088_gyro_init(void)
 * @details:    	读取BMI088传感器数据，包括加速度、陀螺仪和温度
 ************************************************************************
 **/
-float m = 1;
+
 void BMI088_read(float gyro[IMU_NUM], float accel[IMU_NUM], float *temperate, float pose[IMU_NUM], float dt)
 {
     uint8_t buf[8] = {0, 0, 0, 0, 0, 0};
@@ -291,8 +305,10 @@ void BMI088_read(float gyro[IMU_NUM], float accel[IMU_NUM], float *temperate, fl
     static float roll, pitch, yaw;
     static int first_run = 1;
 
+    static float pose_filter[IMU_NUM][3];
+    static float pose_raw[IMU_NUM][3];
     // 互补滤波参数
-    float alpha = 1;                // hubu权重
+    static float alpha = 1;             // hubu权重
     const float gyro_threshold = 0.02f; // 陀螺仪死区阈值
 
     // 读取加速度计数据
@@ -328,67 +344,69 @@ void BMI088_read(float gyro[IMU_NUM], float accel[IMU_NUM], float *temperate, fl
         gyro[P_PITCH] = bmi088_raw_temp * BMI088_GYRO_SEN;
         bmi088_raw_temp = (int16_t)((buf[7]) << 8) | buf[6];
         gyro[P_YAW] = bmi088_raw_temp * BMI088_GYRO_SEN;
-
-        // 初始化处理（第一次运行时）
-        if (first_run)
-        {
-            roll = accel_roll;
-            pitch = accel_pitch;
-            yaw = 0;
-            first_run = 0;
-        }
-
         // 互补滤波实现
         // 横滚角和俯仰角：融合陀螺仪积分和加速度计测量值
         if (accel_norm > m)
             alpha = 1;
         else
             alpha = 0;
+        //        if (fabs(gyro[P_ROLL]) > gyro_threshold)
+        //        {
+        //            gyro[P_ROLL] = 0;
+        //        }
+        //        if (fabs(gyro[P_PITCH]) > gyro_threshold)
+        //        {
+        //            gyro[P_PITCH] = 0;
+        //        }
 
-        roll = alpha * (roll + gyro[P_ROLL] * dt) + (1 - alpha) * accel_roll;
-        // DebugData[4] = pitch;
-        pitch = alpha * (pitch + gyro[P_PITCH] * dt) + (1 - alpha) * accel_pitch;
+        pose_raw[P_ROLL][data_now] = alpha * (pose_filter[P_ROLL][data_now] + gyro[P_ROLL] * dt) + (1 - alpha) * accel_roll;
+        pose_raw[P_PITCH][data_now] = alpha * (pose_filter[P_PITCH][data_now] + gyro[P_PITCH] * dt) + (1 - alpha) * accel_pitch;
 
-        // DebugData[1] = alpha;
-        // DebugData[2] = accel_pitch;
-        // DebugData[3] = accel_norm;
+        pose_filter[P_ROLL][data_now] = b0 * pose_raw[P_ROLL][data_now] + b1 * pose_raw[P_ROLL][data_last] + b2 * pose_raw[P_ROLL][data_lastlast] - a1 * pose_filter[P_ROLL][data_last] - a2 * pose_filter[P_ROLL][data_lastlast];
+        pose_filter[P_PITCH][data_now] = b0 * pose_raw[P_PITCH][data_now] + b1 * pose_raw[P_PITCH][data_last] + b2 * pose_raw[P_PITCH][data_lastlast] - a1 * pose_filter[P_PITCH][data_last] - a2 * pose_filter[P_PITCH][data_lastlast];
+
+        // DebugData[0] = pose_filter[P_ROLL][data_now];
+        // DebugData[1] = pose_raw[P_ROLL][data_now];
+        // DebugData[2] = accel_roll;
 
         // 偏航角：仅使用陀螺仪积分（无磁力计校正）
         if (fabs(gyro[P_YAW]) > gyro_threshold)
         {
-            yaw += gyro[P_YAW] * dt;
+            pose_filter[P_YAW][data_now] += gyro[P_YAW] * dt;
         }
 
         // 角度归一化到[-π, π]范围
-        if (roll > M_PI)
-            roll -= 2 * M_PI;
-        else if (roll < -M_PI)
-            roll += 2 * M_PI;
+        if (pose_filter[P_ROLL][data_now] > M_PI)
+            pose_filter[P_ROLL][data_now] -= 2 * M_PI;
+        else if (pose_filter[P_ROLL][data_now] < -M_PI)
+            pose_filter[P_ROLL][data_now] += 2 * M_PI;
 
-        if (pitch > M_PI)
-            pitch -= 2 * M_PI;
-        else if (pitch < -M_PI)
-            pitch += 2 * M_PI;
+        if (pose_filter[P_PITCH][data_now] > M_PI)
+            pose_filter[P_PITCH][data_now] -= 2 * M_PI;
+        else if (pose_filter[P_PITCH][data_now] < -M_PI)
+            pose_filter[P_PITCH][data_now] += 2 * M_PI;
 
-        if (yaw > M_PI)
-            yaw -= 2 * M_PI;
-        else if (yaw < -M_PI)
-            yaw += 2 * M_PI;
+        if (pose_filter[P_YAW][data_now] > M_PI)
+            pose_filter[P_YAW][data_now] -= 2 * M_PI;
+        else if (pose_filter[P_YAW][data_now] < -M_PI)
+            pose_filter[P_YAW][data_now] += 2 * M_PI;
     }
 
-    // // 读取温度数据
-    // BMI088_accel_read_muli_reg(BMI088_TEMP_M, buf, 2);
-    // bmi088_raw_temp = (int16_t)((buf[0] << 3) | (buf[1] >> 5));
-    // if (bmi088_raw_temp > 1023)
-    // {
-    //     bmi088_raw_temp -= 2048;
-    // }
-    // *temperate = bmi088_raw_temp * BMI088_TEMP_FACTOR + BMI088_TEMP_OFFSET;
+    pose[P_ROLL] = pose_filter[P_ROLL][data_now];
+    pose[P_PITCH] = pose_filter[P_PITCH][data_now];
+    pose[P_YAW] = pose_filter[P_YAW][data_now];
 
-    // 将计算出的位姿信息存入pose数组（单位：弧度）
-    pose[P_ROLL] = roll;  // 横滚角（绕X轴）
-    pose[P_PITCH] = pitch; // 俯仰角（绕Y轴）
-    pose[P_YAW] = yaw;   // 偏航角（绕Z轴）
+    pose_filter[P_ROLL][data_lastlast] = pose_filter[P_ROLL][data_last];
+    pose_filter[P_ROLL][data_last] = pose_filter[P_ROLL][data_now];
+
+    pose_filter[P_PITCH][data_lastlast] = pose_filter[P_PITCH][data_last];
+    pose_filter[P_PITCH][data_last] = pose_filter[P_PITCH][data_now];
+
+    pose_raw[P_ROLL][data_lastlast] = pose_raw[P_ROLL][data_last];
+    pose_raw[P_ROLL][data_last] = pose_raw[P_ROLL][data_now];
+
+    pose_raw[P_PITCH][data_lastlast] = pose_raw[P_PITCH][data_last];
+    pose_raw[P_PITCH][data_last] = pose_raw[P_PITCH][data_now];
 }
 #if defined(BMI088_USE_SPI)
 /**
@@ -454,6 +472,7 @@ static void BMI088_read_muli_reg(uint8_t reg, uint8_t *buf, uint8_t len)
         len--;
     }
 }
+
 #elif defined(BMI088_USE_IIC)
 
 #endif

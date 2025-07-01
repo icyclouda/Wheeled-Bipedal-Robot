@@ -2,7 +2,7 @@
  * @Author: IcyClouda 2330329778@qq.com
  * @Date: 2025-06-20 16:17:34
  * @LastEditors: IcyClouda 2330329778@qq.com
- * @LastEditTime: 2025-06-20 20:12:49
+ * @LastEditTime: 2025-06-29 21:39:49
  * @FilePath: \CtrBoard-H7_IMU\Device\BMI088\inc\BMI088driver.h
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -50,6 +50,14 @@
 #define BMI088_GYRO_250_SEN 0.00013315805450396191230191732547673f
 #define BMI088_GYRO_125_SEN 0.000066579027251980956150958662738366f
 
+typedef struct
+{
+    float a0, a1, a2;
+    float b0, b1, b2;
+    float x1, x2; // 输入历史
+    float y1, y2; // 输出历史
+} SecondOrderLPF;
+
 typedef struct BMI088_RAW_DATA
 {
     uint8_t status;
@@ -72,7 +80,12 @@ typedef struct BMI088_REAL_DATA
     float gyro[3];
     float time;
 } bmi088_real_data_t;
-
+typedef enum
+{
+    data_now,
+    data_last,
+    data_lastlast
+} Data_Enum;
 enum
 {
     BMI088_NO_ERROR = 0x00,
@@ -98,7 +111,13 @@ enum
 extern uint8_t BMI088_init(void);
 extern uint8_t bmi088_accel_init(void);
 extern uint8_t bmi088_gyro_init(void);
-
 extern void BMI088_read(float gyro[IMU_NUM], float accel[IMU_NUM], float *temperate, float pose[IMU_NUM], float dt);
 
+extern float omega;
+extern float b0;
+extern float b2;
+extern float b1;
+extern float a1;
+extern float a2;
+extern float m;
 #endif
